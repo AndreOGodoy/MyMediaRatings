@@ -1,5 +1,12 @@
 # MyMediaRatings
 
+## Grupo
+
+- [ ] André de Oliveira Godoy
+- [ ] Julia Fonseca de Sena
+- [ ] Lucas Mariani Paiva Caldeira Brant
+- [ ] Luiz Guilherme Leroy Vieira
+
 ## Funcionalidades
 
 - [ ] Banco de dados de mídias
