@@ -1,0 +1,45 @@
+Módulos do Sistema:
+	-> DB			} Julia
+	-> Gerenciamento do DB  }
+
+	-> Views (Filtragem)    } André
+	
+	-> Stats		} Lil'roy
+
+	-> Interface		} Lucas
+
+* Gerenciamento:
+  Instanciamento dos Dados
+  Testes:
+	muda_nota()/midia/comentario...
+	possui_nota()/midia/comentario...
+
+* Views:
+  Testes:
+	por_genero()
+	por_nota()
+	por_nota() + por_genero() ? tem como juntar filtro ?
+
+* Stats:
+	Métricas de visualização por tempo
+  	Gênero mais visto
+	Tempo entre marcar para assistir e assistido
+	Tempo por página (no caso de livro)
+ 
+  
+* Interface:
+	Como referenciar um item?
+	Pynput
+	
+IN[1]: lista livros
+OUT[1]:
+
+	[1] Livro1
+	[2] Livro2
+	[3] Livro3
+
+IN[2]: stats 2
+
+
+
+
