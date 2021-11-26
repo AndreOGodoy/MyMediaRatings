@@ -8,16 +8,20 @@ class Midia():
 @dataclass
 class Filme(Midia):
     duracao: int 
-    diretor: str
+    diretor: [str]
+    elenco: [str]
+    ano: int
     
 @dataclass
 class Serie(Midia):
     episodios: int
+    tempo_episodio: int
     temporadas: int
-    lista_atores: [str]
+    ano: int
+    elenco: [str]
 
 @dataclass
 class Livro(Midia):
-    autor: str
+    autor: [str]
     paginas: int
-
+    ano: int
