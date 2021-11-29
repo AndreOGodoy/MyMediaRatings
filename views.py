@@ -128,5 +128,5 @@ class View():
             self._composicao[filtro] = coluna
             self._filtros.append(filtro)
 
-    def print_data(self):
-        print(self._data)
+    def __repr__(self) -> str:
+        return self._composicao.__repr__()
