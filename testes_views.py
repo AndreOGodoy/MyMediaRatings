@@ -43,13 +43,30 @@ class TestViews(TestCase):
 
     def test_numero_filtros_possiveis_nova_view(self):
         filtros_possiveis = self.view.obtem_filtros_possiveis()
-        self.assertEqual(len(filtros_possiveis), 16)
+        self.assertEqual(len(filtros_possiveis), 13)
 
     def test_filtra_por_aplica_filtro(self):
-        self.view.filtra_por('genero')
+        self.view.filtra_por('duracao')
         filtros_aplicados = self.view.filtros
 
-        self.assertEqual(filtros_aplicados, ['genero'])
+        self.assertEqual(filtros_aplicados, ['duracao'])
+
+    def test_define_filtro_ambiguo(self):
+        # A coluna 'ano_lancamento' está presente em 3 tabelas
+        # Logo, é ambíguo filtrar pela mesma
+
+        with self.assertRaises(FiltroAmbiguoException):
+            self.view.filtros = ['ano_lancamento']
+
+    def test_aplica_filtro_ambiguo(self):
+        self.assertRaises(FiltroAmbiguoException, self.view.filtra_por, 'ano_lancamento')
+
+    def test_define_filtro_inexistente(self):
+        with self.assertRaises(FiltroInexistenteException):
+            self.view.filtros = ['coluna_nao_existente']
+
+    def test_aplica_filtro_inexistente(self):
+        self.assertRaises(FiltroInexistenteException, self.view.filtra_por, 'coluna_nao_existente')
 
     def test_numero_filtros_possiveis_apos_definir_filtro_unico(self):
         filtros_possiveis_inicial = self.view.obtem_filtros_possiveis()
@@ -68,10 +85,10 @@ class TestViews(TestCase):
     def test_numero_filtros_possiveis_apos_redefinir_filtro(self):
         self.view.filtros = ['genero', 'autor']
         filtros_possiveis_pre_redef = self.view.obtem_filtros_possiveis()
-        self.view.filtros = ['genero']
+        self.view.filtros = ['duracao']
         filtros_possiveis_pos_def = self.view.obtem_filtros_possiveis()
 
-        self.assertEqual(len(filtros_possiveis_pre_redef), len(filtros_possiveis_pos_def) - 1)
+        self.assertEqual(len(filtros_possiveis_pre_redef), len(filtros_possiveis_pos_def) + 1)
 
     def test_numero_filtros_possiveis_apos_nova_aplicacao(self):
         filtros_possiveis_inicial = self.view.obtem_filtros_possiveis()

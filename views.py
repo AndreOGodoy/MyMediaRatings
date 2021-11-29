@@ -36,16 +36,41 @@ class _ViewCache():
         # Retorna os 'data_attributes', que são os DataFrames
         return [getattr(self._instancia, df_name) for df_name in db_data_attr]
 
+class FiltroAmbiguoException(Exception):
+    filtro_ambiguo: str
+
+    def __init__(self, filtro_ambiguo: str):
+        self.filtro_ambiguo = filtro_ambiguo
+
+        mensagem = f'O filtro \'{filtro_ambiguo}\' é ambíguo:'
+        mensagem += ' existe mais de uma tabela com esta coluna no banco de dados'
+
+        super().__init__(mensagem)
+
+class FiltroInexistenteException(Exception):
+    filtro_inexistente: str
+
+    def __init__(self, filtro_inexistente: str):
+        self.filtro_inexistente = filtro_inexistente
+
+        mensagem = f'O filtro \'{filtro_inexistente}\' não está presente no banco de dados'
+
+        super().__init__(mensagem)
+
 CACHE = _ViewCache()
 
 class View():
     _data: List[pd.DataFrame]
     _filtros: [str]
 
+    _composicao: pd.DataFrame
+
     _instancia: _ViewCache
 
     def __init__(self):
         self._filtros = []
+        self._composicao = pd.DataFrame()
+
         self._instancia = CACHE
         self._sincroniza_db()
 
@@ -58,19 +83,50 @@ class View():
 
     @filtros.setter
     def filtros(self, novos_filtros: [str]):
-        self._filtros = copy(novos_filtros)
-        
-    def obtem_filtros_possiveis(self) -> [str]:
+        for filtro in novos_filtros:
+            coluna = self._obtem_coluna_do_filtro(filtro)
+
+            self._composicao[filtro] = coluna
+            self._filtros.append(filtro)
+
+    def obtem_filtros_possiveis(self) -> List[str]:
         colunas = []
         for df in self._data:
             colunas.extend(df.columns)
 
-        colunas_unicas = list(set(colunas))
+        colunas_nao_ambiguas = [coluna for coluna in colunas \
+                                if colunas.count(coluna)==1]
 
-        return [filtro for filtro in colunas_unicas if filtro not in self._filtros]
+        return [filtro for filtro in colunas_nao_ambiguas \
+                if filtro not in self._filtros]
+
+    def _obtem_coluna_do_filtro(self, filtro: str) -> pd.Series:
+        # Filtro já foi aplicado
+        if filtro in self.filtros:
+            # TODO: Deve retornar erro ou não fazer nada?
+            pass
+        else:
+            colunas_obtidas = [df[filtro] for df in self._data \
+                               if filtro in df.columns]
+            n_colunas_obtidas = len(colunas_obtidas)
+
+            if n_colunas_obtidas == 0:
+                raise FiltroInexistenteException(filtro)
+
+            elif len(colunas_obtidas) > 1:
+                # TODO: Resolver este caso
+                raise FiltroAmbiguoException(filtro)
+                return self
+
+            # Deve ser sempre verdadeiro por causa dos dois if's acima
+            assert len(colunas_obtidas) == 1
+            return colunas_obtidas[0]
 
     def filtra_por(self, filtro: str):
-        self._filtros.append(filtro)
-    
+            coluna = self._obtem_coluna_do_filtro(filtro)
+
+            self._composicao[filtro] = coluna
+            self._filtros.append(filtro)
+
     def print_data(self):
         print(self._data)
