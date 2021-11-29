@@ -69,7 +69,7 @@ class View():
 
         return [filtro for filtro in colunas_unicas if filtro not in self._filtros]
 
-    def aplica_filtro(self, filtro: str):
+    def filtra_por(self, filtro: str):
         self._filtros.append(filtro)
     
     def print_data(self):

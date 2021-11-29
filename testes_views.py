@@ -45,8 +45,8 @@ class TestViews(TestCase):
         filtros_possiveis = self.view.obtem_filtros_possiveis()
         self.assertEqual(len(filtros_possiveis), 16)
 
-    def test_aplica_filtro_nova_view(self):
-        self.view.aplica_filtro('genero')
+    def test_filtra_por_aplica_filtro(self):
+        self.view.filtra_por('genero')
         filtros_aplicados = self.view.filtros
 
         self.assertEqual(filtros_aplicados, ['genero'])
