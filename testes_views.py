@@ -15,7 +15,7 @@ from unittest.mock import patch
 #
 # Portando, criamos uma função que substituirá a original durante a fixture
 # por meio de patching/mocking
-def cria_db_teste(n: int = 100):
+def cria_db_teste(n: int = 100) -> DataFrame:
     rng = np.random.default_rng()
 
     escolhe_n_reps = lambda lista: rng.choice(lista, n)
