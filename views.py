@@ -1,8 +1,11 @@
 import pandas as pd
 from copy import copy
+from typing import List
+
+from base_dados import Base_Midias
 
 class View():
-    _data: pd.DataFrame
+    _data: List[pd.DataFrame]
     _filtros: [str]
     
     def __init__(self):
@@ -11,7 +14,7 @@ class View():
 
     def _sincroniza_db(self):
         # Conexão com DB ainda não integrada
-        self._data = pd.DataFrame()
+        self._data = [pd.DataFrame()]
 
     @property
     def filtros(self):
@@ -22,7 +25,13 @@ class View():
         self._filtros = copy(novos_filtros)
         
     def obtem_filtros_possiveis(self) -> [str]:
-        return [filtro for filtro in list(self._data.columns) if filtro not in self._filtros]
+        colunas = []
+        for df in self._data:
+            colunas.extend(df.columns)
+
+        colunas_unicas = list(set(colunas))
+
+        return [filtro for filtro in colunas_unicas if filtro not in self._filtros]
 
     def aplica_filtro(self, filtro: str):
         self._filtros.append(filtro)

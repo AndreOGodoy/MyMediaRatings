@@ -2,6 +2,7 @@ from views import *
 
 from pandas import DataFrame
 import numpy as np
+from typing import List
 
 from unittest import TestCase
 from unittest.mock import patch
@@ -15,29 +16,21 @@ from unittest.mock import patch
 #
 # Portando, criamos uma função que substituirá a original durante a fixture
 # por meio de patching/mocking
-def cria_db_teste(n: int = 100) -> DataFrame:
-    rng = np.random.default_rng()
+def cria_db_teste() -> List[DataFrame]:
+    livros = DataFrame()
+    livros['autor'] = pd.Series(['fulano', 'ciclana', 'beltrana'])
+    livros['num_paginas'] = pd.Series([200, 100, 400])
+    livros['genero'] = pd.Series(['terror', 'ação', 'fantasia'])
 
-    escolhe_n_reps = lambda lista: rng.choice(lista, n)
-    gera_num_pag = lambda: rng.choice([100, 200, 300, 400, 500, 600], 1)[0]
-    gera_nota = lambda: np.round(rng.uniform(0, 10), 1)
+    filmes = DataFrame()
+    filmes['diretor'] = pd.Series(['ciclana', 'beltrana', 'fulano'])
+    filmes['duracao'] = pd.Series([123, 92, 70])
+    filmes['genero'] = pd.Series(['ação', 'fantasia', 'terror'])
 
-    midias_possiveis = ['Livro', 'Filme', 'Serie', 'Animacao']
-    notas_possiveis = [gera_nota() for _ in range(n)]
-    generos_possiveis = ['Terror', 'Romance', 'Aventura', 'Ficção Científica']
-
-    buffer = {}
-    buffer['tipo_midia'] = escolhe_n_reps(midias_possiveis)
-    buffer['n_paginas'] = [gera_num_pag() if midia == "Livro" \
-                           else None for midia in buffer['tipo_midia']]
-    buffer['nota'] = escolhe_n_reps(notas_possiveis)
-    buffer['genero'] = escolhe_n_reps(generos_possiveis)
-
-    df = pd.DataFrame.from_dict(buffer)
-    return df
+    return [livros, filmes]
 
 def _sincroniza_db(self):
-    self._data = cria_db_teste(n=20)
+    self._data = cria_db_teste()
 
 class TestViews(TestCase):
 
@@ -50,39 +43,39 @@ class TestViews(TestCase):
 
     def test_numero_filtros_possiveis_nova_view(self):
         filtros_possiveis = self.view.obtem_filtros_possiveis()
-        self.assertEqual(len(filtros_possiveis), 4)
+        self.assertEqual(len(filtros_possiveis), 5)
 
     def test_aplica_filtro_nova_view(self):
-        self.view.aplica_filtro("tipo_midia")
+        self.view.aplica_filtro('genero')
         filtros_aplicados = self.view.filtros
 
-        self.assertEqual(filtros_aplicados, ["tipo_midia"])
+        self.assertEqual(filtros_aplicados, ['genero'])
 
     def test_numero_filtros_possiveis_apos_definir_filtro_unico(self):
         filtros_possiveis_inicial = self.view.obtem_filtros_possiveis()
-        self.view.filtros = ["tipo_midia"]
+        self.view.filtros = ['genero']
         filtros_possiveis_final = self.view.obtem_filtros_possiveis()
 
         self.assertEqual(len(filtros_possiveis_inicial), len(filtros_possiveis_final) + 1)
 
     def test_numero_filtros_possiveis_apos_definir_filtro_duplo(self):
         filtros_possiveis_inicial = self.view.obtem_filtros_possiveis()
-        self.view.filtros = ["tipo_midia", "genero"]
+        self.view.filtros = ['genero', 'autor']
         filtros_possiveis_final = self.view.obtem_filtros_possiveis()
 
         self.assertEqual(len(filtros_possiveis_inicial), len(filtros_possiveis_final) + 2)
 
     def test_numero_filtros_possiveis_apos_redefinir_filtro(self):
-        self.view.filtros = ["tipo_midia", "genero"]
+        self.view.filtros = ['genero', 'autor']
         filtros_possiveis_pre_redef = self.view.obtem_filtros_possiveis()
-        self.view.filtros = ["tipo_midia"]
+        self.view.filtros = ['genero']
         filtros_possiveis_pos_def = self.view.obtem_filtros_possiveis()
 
         self.assertEqual(len(filtros_possiveis_pre_redef), len(filtros_possiveis_pos_def) - 1)
 
     def test_numero_filtros_possiveis_apos_nova_aplicacao(self):
         filtros_possiveis_inicial = self.view.obtem_filtros_possiveis()
-        self.view.filtros = ["Midia"]
+        self.view.filtros = ['genero']
 
     def test_numero_filtros_aplicados_nova_view(self):
         filtros = self.view.filtros
