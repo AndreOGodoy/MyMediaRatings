@@ -1,7 +1,9 @@
 from views import *
 
+import pandas as pd
 from pandas import DataFrame
 import numpy as np
+import os
 from typing import List
 
 from unittest import TestCase
@@ -17,17 +19,15 @@ from unittest.mock import patch
 # Portando, criamos uma função que substituirá a original durante a fixture
 # por meio de patching/mocking
 def cria_db_teste() -> List[DataFrame]:
-    livros = DataFrame()
-    livros['autor'] = pd.Series(['fulano', 'ciclana', 'beltrana'])
-    livros['num_paginas'] = pd.Series([200, 100, 400])
-    livros['genero'] = pd.Series(['terror', 'ação', 'fantasia'])
+    dfs = []
 
-    filmes = DataFrame()
-    filmes['diretor'] = pd.Series(['ciclana', 'beltrana', 'fulano'])
-    filmes['duracao'] = pd.Series([123, 92, 70])
-    filmes['genero'] = pd.Series(['ação', 'fantasia', 'terror'])
+    caminho = './csv_teste'
+    for csv in os.listdir(caminho):
+        caminho_csv = os.path.join(caminho, csv)
+        df = pd.read_csv(caminho_csv, sep=';')
+        dfs.append(df)
 
-    return [livros, filmes]
+    return dfs
 
 def _sincroniza_db(self):
     self._data = cria_db_teste()
@@ -43,7 +43,7 @@ class TestViews(TestCase):
 
     def test_numero_filtros_possiveis_nova_view(self):
         filtros_possiveis = self.view.obtem_filtros_possiveis()
-        self.assertEqual(len(filtros_possiveis), 5)
+        self.assertEqual(len(filtros_possiveis), 16)
 
     def test_aplica_filtro_nova_view(self):
         self.view.aplica_filtro('genero')
