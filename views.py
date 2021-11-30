@@ -15,7 +15,7 @@ class _ViewCache():
     _instancia = pd.DataFrame
 
     def __init__(self):
-        self._instancia = Base_Midias()
+        self._instancia = Base_Midias('csv/)
 
     def obtem_dbs(self) -> List[pd.DataFrame]:
         # O código abaixo tem como objetivo obter os dataframes, atributos de Base_Midias, sem ter
