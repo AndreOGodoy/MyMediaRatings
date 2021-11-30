@@ -4,21 +4,118 @@ from midia import *
 from registro import Registro
 
 class Base_Midias():
-    db_registros = pd.read_csv('csv/registros.csv', sep=';')
-    db_series = pd.read_csv('csv/series.csv', sep=';')
-    db_filmes = pd.read_csv('csv/filmes.csv', sep=';')
-    db_livros = pd.read_csv('csv/livros.csv', sep=';')
+    db_registros = pd.DataFrame #DataFrame de colunas comuns aos tipos
+    db_series = pd.DataFrame #DataFrame de colunas somente sobre séries
+    db_filmes = pd.DataFrame #DataFrame de colunas somente sobre filmes
+    db_livros = pd.DataFrame #DataFrame de colunas somente sobre livros
+    endereco_pasta = str #Endereço da pasta onde se encontram os csv's
+
+    def __init__(self, endereco):
+        self.db_registros = pd.read_csv(endereco+'registros.csv', sep=';')
+        self.db_series = pd.read_csv(endereco+'series.csv', sep=';')
+        self.db_filmes = pd.read_csv(endereco+'filmes.csv', sep=';')
+        self.db_livros = pd.read_csv(endereco+'livros.csv', sep=';')
+        self.endereco_pasta = endereco
+
+    #Retorna instância da classe Série com dados da linha com certo id
+    def retorna_serie(self, id_serie, registro):
+        serie_correspondente = self.db_series[self.db_series['id'] == id_serie]
+        serie = Serie(registro['nome'].values[0], registro['genero'].values[0], 
+                      serie_correspondente['num_episodios'].values[0], serie_correspondente['tempo_por_ep'].values[0], 
+                      serie_correspondente['num_temporadas'].values[0], serie_correspondente['ano_lancamento'].values[0], 
+                      serie_correspondente['elenco'].values[0].split(', '))
+        return serie
+    
+    #Retorna instância da classe Filme com dados da linha com certo id
+    def retorna_filme(self, id_filme, registro):
+        filme_correspondente = self.db_filmes[self.db_filmes['id'] == id_filme]
+        filme = Filme(registro['nome'].values[0], registro['genero'].values[0], 
+                      filme_correspondente['duracao'].values[0], filme_correspondente['diretor'].values[0].split(', '), 
+                      filme_correspondente['elenco'].values[0].split(', '), filme_correspondente['ano_lancamento'].values[0])
+        return filme
+
+    #Retorna instância da classe Livre com dados da linha com certo id
+    def retorna_livro(self, id_livro, registro):
+        livro_correspondente = self.db_livros[self.db_livros['id'] == id_livro]
+        livro = Livro(registro['nome'].values[0], registro['genero'].values[0], 
+                    livro_correspondente['autor'].values[0].split(', '), livro_correspondente['num_paginas'].values[0], 
+                    livro_correspondente['ano_lancamento'].values[0])
+        return livro
+
+    #Retorna os registros com nome correpondente, podendo o tipo da mídia ser especificado ou não
+    def retorna_registro_por_nome(self, nome, tipo=False):
+        registros_correspondentes = self.db_registros[self.db_registros['nome'] == nome]
+
+        #Se tipo não foi especificado
+        if tipo == False:
+            registros = []
+            #Retorna lista com os registros de todas as linhas com nome correspondente
+            for _, linha in registros_correspondentes.iterrows():
+                registros += self.retorna_registro_por_nome(linha['nome'], tipo=linha['tipo_midia'])
+            
+            if len(registros) > 0:
+                return registros
+        
+        #Com tipo especificado, seleciona o registro correto
+        registros_correspondentes = registros_correspondentes[registros_correspondentes['tipo_midia'] == tipo]
+        if len(registros_correspondentes) == 0:
+            return 'Nenhum registro correspondente encontrado'
+        
+        #Se for série, monta o registro
+        if tipo == 'Série':
+            id_serie = registros_correspondentes['id'].values[0]
+            serie = self.retorna_serie(id_serie, registros_correspondentes)
+            return [Registro(registros_correspondentes['nota'].values[0], serie, registros_correspondentes['comentario'].values[0], 
+                            registros_correspondentes['ja_consumiu'].values[0])]
+
+        #Se for filme, monta o registro
+        elif tipo == 'Filme':
+            id_filme = registros_correspondentes['id'].values[0]
+            filme = self.retorna_filme(id_filme, registros_correspondentes)
+            return [Registro(registros_correspondentes['nota'].values[0], filme, registros_correspondentes['comentario'].values[0], 
+                            registros_correspondentes['ja_consumiu'].values[0])]
+
+        #Se for livro, monta o registro
+        elif tipo == 'Livro':
+            id_livro = registros_correspondentes['id'].values[0]
+            livro = self.retorna_livro(id_livro, registros_correspondentes)
+            return [Registro(registros_correspondentes['nota'].values[0], livro, registros_correspondentes['comentario'].values[0], 
+                            registros_correspondentes['ja_consumiu'].values[0])]
+
+    #Retorna os registros com id correpondente
+    def retorna_registro_id(self, num_id):
+        #Seleciona o registro correspondente ao id
+        registro_correspondente = self.db_registros[self.db_registros['id'] == num_id]
+
+        if len(registro_correspondente) == 0:
+            return 'Nenhum registro correspondente encontrado'
+        
+        #Identifica o tipo da mídia
+        tipo = registro_correspondente['tipo_midia'].values[0]
+        
+        if tipo == 'Série':
+            serie = self.retorna_serie(num_id, registro_correspondente)
+            return Registro(registro_correspondente['nota'].values[0], serie, registro_correspondente['comentario'].values[0], 
+                            registro_correspondente['ja_consumiu'].values[0])
+
+        elif tipo == 'Filme':
+            filme = self.retorna_filme(num_id, registro_correspondente)
+            return Registro(registro_correspondente['nota'].values[0], filme, registro_correspondente['comentario'].values[0], 
+                            registro_correspondente['ja_consumiu'].values[0])
+
+        elif tipo == 'Livro':
+            livro = self.retorna_livro(num_id, registro_correspondente)
+            return Registro(registro_correspondente['nota'].values[0], livro, registro_correspondente['comentario'].values[0], 
+                            registro_correspondente['ja_consumiu'].values[0])
 
     def verifica_permitido_adicionar(self, registro, tipo):
         #Se houver mídia de mesmo nome e tipo, considera que já está na base de dados
         mesmo_nome = self.db_registros[self.db_registros['nome'] == registro.midia.nome]
         if len(mesmo_nome[mesmo_nome['tipo_midia'] == tipo]) > 0:
-            print('Mídia já está na base!')
             return False
         
         #Se ainda não consumiu a mídia, não pode avaliá-la ou comentá-la
         if registro.ja_consumiu == False and (registro.nota != None or registro.comentario != None):
-            print('Não pode dar nota ou comentar antes de assistir!')
             return False
         
         return True
@@ -41,7 +138,7 @@ class Base_Midias():
             elenco = ''
             for n in registro.midia.elenco:
                 elenco += n + ', '
-            elenco += '\b\b'
+            elenco = elenco[:-2]
         else:
             elenco = None
         
@@ -61,7 +158,7 @@ class Base_Midias():
             elenco = ''
             for n in registro.midia.elenco:
                 elenco += n + ', '
-            elenco += '\b\b'
+            elenco = elenco[:-2]
         else:
             elenco = None
         
@@ -70,7 +167,7 @@ class Base_Midias():
             diretores = ''
             for n in registro.midia.diretor:
                 diretores += n + ', '
-            diretores += '\b\b'
+            diretores = diretores[:-2]
         else:
             diretores = None
         
@@ -89,56 +186,89 @@ class Base_Midias():
             autores = ''
             for n in registro.midia.autor:
                 autores += n + ', '
-            autores += '\b\b'
+            autores = autores[:-2]
         else:
             autores = None
         
         self.db_livros.loc[self.db_livros.index.max()+1] = [ind, registro.midia.paginas, autores, registro.midia.ano]
 
-    def retorna_midia_nome(self, nome, tipo=False):
+    #Remove série do DataFrame específico
+    def remove_serie(self, num_id):
+        serie_correspondente = self.db_series[self.db_series['id'] == num_id]
+
+        ind = serie_correspondente.index[0]
+        self.db_series = self.db_series.drop(ind)
+    
+    #Remove livro do DataFrame específico
+    def remove_livro(self, num_id):
+        livro_correspondente = self.db_livros[self.db_livros['id'] == num_id]
+
+        ind = livro_correspondente.index[0]
+        self.db_livros = self.db_livros.drop(ind)
+
+    #Remove filme do DataFrame específico
+    def remove_filme(self, num_id):
+        filme_correspondente = self.db_filmes[self.db_filmes['id'] == num_id]
+
+        ind = filme_correspondente.index[0]
+        self.db_filmes = self.db_filmes.drop(ind)
+    
+    #Remove registro identificado pelo nome; tipo não precisa ser indicado se só houver um registro com nome igual
+    def remove_registro_nome(self, nome, tipo=False):
         registros_correspondentes = self.db_registros[self.db_registros['nome'] == nome]
 
-        if tipo == False:
-            registros = []
-            for _, linha in registros_correspondentes.iterrows():
-                registros += self.retorna_midia_nome(linha['nome'], tipo=linha['tipo_midia'])
-            return registros
+        if tipo == False and len(registros_correspondentes) > 1: #Se há mais de um registro, precisa especificar o tipo
+            return 'Informação de tipo de mídia necessária'
+        elif tipo == False and len(registros_correspondentes) == 1: #Se há só um, infere o tipo
+            tipo = registros_correspondentes['tipo_midia'].values[0]
         
-        registros_correspondentes = registros_correspondentes[registros_correspondentes['tipo_midia'] == tipo]
-        if len(registros_correspondentes) == 0:
-            return False
+        #Seleciona o registro do tipo informado
+        registro_correspondente = registros_correspondentes[registros_correspondentes['tipo_midia'] == tipo]
+        if len(registro_correspondente) == 0:
+            return 'Nenhum registro correspondente encontrado'
         
+        ind = registro_correspondente.index[0] #Índice do registro
+        num_id = registro_correspondente['id'].values[0] #Identifica o id do registro
+        self.db_registros = self.db_registros.drop(ind) #Remove a linha do DataFrame geral
+
+        #Remove registro dos DataFrame correspondentes
         if tipo == 'Série':
-            id_serie = registros_correspondentes['id'].values[0]
-            serie_correspondente = self.db_series[self.db_series['id'] == id_serie]
-            serie = Serie(registros_correspondentes['nome'].values[0], registros_correspondentes['genero'].values[0], 
-                        serie_correspondente['num_episodios'].values[0], serie_correspondente['tempo_por_ep'].values[0], 
-                        serie_correspondente['num_temporadas'].values[0], serie_correspondente['ano_lancamento'].values[0], 
-                        serie_correspondente['elenco'].values[0].split(', '))
-            return [Registro(registros_correspondentes['nota'].values[0], serie, registros_correspondentes['comentario'].values[0], 
-                            registros_correspondentes['ja_consumiu'].values[0])]
-
-        elif tipo == 'Filme':
-            id_filme = registros_correspondentes['id'].values[0]
-            filme_correspondente = self.db_filmes[self.db_filmes['id'] == id_filme]
-            filme = Filme(registros_correspondentes['nome'].values[0], registros_correspondentes['genero'].values[0], 
-                        filme_correspondente['duracao'].values[0], filme_correspondente['diretor'].values[0].split(', '), 
-                        filme_correspondente['elenco'].values[0].split(', '), filme_correspondente['ano_lancamento'].values[0])
-            return [Registro(registros_correspondentes['nota'].values[0], filme, registros_correspondentes['comentario'].values[0], 
-                            registros_correspondentes['ja_consumiu'].values[0])]
-
+            self.remove_serie(num_id)
+            return
         elif tipo == 'Livro':
-            id_livro = registros_correspondentes['id'].values[0]
-            livro_correspondente = self.db_livros[self.db_livros['id'] == id_livro]
-            livro = Livro(registros_correspondentes['nome'].values[0], registros_correspondentes['genero'].values[0], 
-                        livro_correspondente['autor'].values[0].split(', '), livro_correspondente['num_paginas'].values[0], 
-                        livro_correspondente['ano_lancamento'].values[0])
-            return [Registro(registros_correspondentes['nota'].values[0], livro, registros_correspondentes['comentario'].values[0], 
-                            registros_correspondentes['ja_consumiu'].values[0])]
+            self.remove_livro(num_id)
+            return
+        elif tipo == 'Filme':
+            self.remove_filme(num_id)
+            return
+
+    #Remove registro identificado pelo id
+    def remove_registro_id(self, num_id):
+        registro_correspondente = self.db_registros[self.db_registros['id'] == num_id]
+
+        if len(registro_correspondente) == 0:
+            return 'Nenhum registro correspondente encontrado'
+        
+        #Infere o tipo da mídia
+        tipo = registro_correspondente['tipo_midia'].values[0]
+
+        ind = registro_correspondente.index[0] #Índice do registro
+        self.db_registros = self.db_registros.drop(ind) #Remove a linha do DataFrame geral
+
+        #Remove registro dos DataFrame correspondentes
+        if tipo == 'Série':
+            self.remove_serie(num_id)
+            return
+        elif tipo == 'Livro':
+            self.remove_livro(num_id)
+            return
+        elif tipo == 'Filme':
+            self.remove_filme(num_id)
+            return
 
     #Atualiza os arquivos .csv com os dataframes atuais
     def atualiza_arquivos(self):
-        self.db_registros.to_csv('csv/registros.csv', sep=';', index=False)
-        self.db_series.to_csv('csv/series.csv', sep=';', index=False)
-        self.db_filmes.to_csv('csv/filmes.csv', sep=';', index=False)
-        self.db_livros.to_csv('csv/livros.csv', sep=';', index=False)
+        self.db_registros.to_csv(self.endereco_pasta+'registros.csv', sep=';', index=False)
+        self.db_series.to_csv(self.endereco_pasta+'series.csv', sep=';', index=False)
+        self.db_filmes.to_csv(self.endereco_pasta+'filmes.csv', sep=';', index=False)
+        self.db_livros.to_csv(self.endereco_pasta+'livros.csv', sep=';', index=False)
