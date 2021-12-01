@@ -1,6 +1,6 @@
 import pandas as pd
 from copy import copy
-from typing import List
+from typing import List, Optional, Callable
 
 from base_dados import Base_Midias
 
@@ -114,11 +114,16 @@ class View():
             assert len(colunas_obtidas) == 1
             return colunas_obtidas[0]
 
-    def filtra_por(self, filtro: str):
-            coluna = self._obtem_coluna_do_filtro(filtro)
+    def filtra_por(self, coluna: str, predicado: Optional[Callable] = None):
+        alvo = self._obtem_coluna_do_filtro(coluna)
 
-            self._composicao[filtro] = coluna
-            self._filtros.append(filtro)
+        if predicado:
+            self._composicao[coluna] = alvo.loc[predicado]
+        else:
+            self._composicao[coluna] = alvo
+
+        self._composicao = self._composicao.dropna()
+        self._filtros.append(coluna)
 
     def __repr__(self) -> str:
         return self._composicao.__repr__()
