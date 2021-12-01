@@ -33,8 +33,10 @@ class _ViewCache():
         # Remove os métodos, deixando apenas os 'data attributes'
         db_data_attr = filter(lambda prop: not callable(getattr(self._instancia, prop)), db_attr_sem_especiais)
 
+        db_dfs = filter(lambda data_attr: data_attr.startswith('db'), db_data_attr)
+
         # Retorna os 'data_attributes', que são os DataFrames
-        return [getattr(self._instancia, df_name) for df_name in db_data_attr]
+        return [getattr(self._instancia, df_name) for df_name in db_dfs]
 
 class FiltroAmbiguoException(Exception):
     filtro_ambiguo: str
