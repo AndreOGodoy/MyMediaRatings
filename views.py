@@ -12,31 +12,21 @@ from base_dados import Base_Midias
 # Seu objetivo é impedir que haja um acesso ao DB, e o carregamento de seu
 # conteúdo à memória, à cada nova construção de View()
 class _ViewCache():
-    _instancia = pd.DataFrame
+    _instancia: Base_Midias
+    _dfs: List[pd.DataFrame]
 
     def __init__(self):
+        self._dfs = []
         self._instancia = Base_Midias('csv/')
 
-    def obtem_dbs(self) -> List[pd.DataFrame]:
-        # O código abaixo tem como objetivo obter os dataframes, atributos de Base_Midias, sem ter
-        # que os referenciá-los diretamente. Assim, caso haja mudança no nome e/ou quantidade dos mesmos,
-        # este método não será afetado
-
+    def atualiza(self):
         self._instancia.atualiza_arquivos()
+        self._dfs = self._instancia.retorna_dataframes()
 
-        # Obtem todos os atributos
-        db_attr = dir(self._instancia)
+    def obtem_dbs(self):
+        self.atualiza()
 
-        # Remove os métodos especiais como __init__ e __repr__
-        db_attr_sem_especiais = filter(lambda attr: not attr.startswith('__') , db_attr)
-
-        # Remove os métodos, deixando apenas os 'data attributes'
-        db_data_attr = filter(lambda prop: not callable(getattr(self._instancia, prop)), db_attr_sem_especiais)
-
-        db_dfs = filter(lambda data_attr: data_attr.startswith('db'), db_data_attr)
-
-        # Retorna os 'data_attributes', que são os DataFrames
-        return [getattr(self._instancia, df_name) for df_name in db_dfs]
+        return self._dfs
 
 class FiltroAmbiguoException(Exception):
     filtro_ambiguo: str
