@@ -20,26 +20,25 @@ class Base_Midias():
     #Retorna instância da classe Série com dados da linha com certo id
     def retorna_serie(self, id_serie, registro):
         serie_correspondente = self.db_series[self.db_series['id'] == id_serie]
-        serie = Serie(registro['nome'].values[0], registro['genero'].values[0], 
+        serie = Serie(registro['nome'].values[0], registro['genero'].values[0], registro['ano_lancamento'].values[0], 
                       serie_correspondente['num_episodios'].values[0], serie_correspondente['tempo_por_ep'].values[0], 
-                      serie_correspondente['num_temporadas'].values[0], serie_correspondente['ano_lancamento'].values[0], 
+                      serie_correspondente['num_temporadas'].values[0], 
                       serie_correspondente['elenco'].values[0].split(', '))
         return serie
     
     #Retorna instância da classe Filme com dados da linha com certo id
     def retorna_filme(self, id_filme, registro):
         filme_correspondente = self.db_filmes[self.db_filmes['id'] == id_filme]
-        filme = Filme(registro['nome'].values[0], registro['genero'].values[0], 
+        filme = Filme(registro['nome'].values[0], registro['genero'].values[0], registro['ano_lancamento'].values[0], 
                       filme_correspondente['duracao'].values[0], filme_correspondente['diretor'].values[0].split(', '), 
-                      filme_correspondente['elenco'].values[0].split(', '), filme_correspondente['ano_lancamento'].values[0])
+                      filme_correspondente['elenco'].values[0].split(', '))
         return filme
 
     #Retorna instância da classe Livre com dados da linha com certo id
     def retorna_livro(self, id_livro, registro):
         livro_correspondente = self.db_livros[self.db_livros['id'] == id_livro]
-        livro = Livro(registro['nome'].values[0], registro['genero'].values[0], 
-                    livro_correspondente['autor'].values[0].split(', '), livro_correspondente['num_paginas'].values[0], 
-                    livro_correspondente['ano_lancamento'].values[0])
+        livro = Livro(registro['nome'].values[0], registro['genero'].values[0], registro['ano_lancamento'].values[0], 
+                    livro_correspondente['autor'].values[0].split(', '), livro_correspondente['num_paginas'].values[0])
         return livro
 
     #Retorna os registros com nome correpondente, podendo o tipo da mídia ser especificado ou não
@@ -122,8 +121,8 @@ class Base_Midias():
     
     #Adiciona as colunas em db_registro, comuns a todas as mídias
     def adiciona_colunas_comuns(self, registro, ind, tipo):
-        self.db_registros.loc[self.db_registros.index.max()+1] = [ind, registro.midia.nome, registro.midia.genero, tipo, 
-                                                                  registro.nota, registro.comentario, registro.ja_consumiu]
+        self.db_registros.loc[self.db_registros.index.max()+1] = [ind, registro.midia.nome, registro.midia.genero, registro.midia.ano, 
+                                                                  tipo, registro.nota, registro.comentario, registro.ja_consumiu]
 
     #Adiciona série à base
     def adiciona_serie(self, registro):
@@ -142,8 +141,7 @@ class Base_Midias():
         else:
             elenco = None
         
-        self.db_series.loc[self.db_series.index.max()+1] = [ind, registro.midia.episodios, registro.midia.temporadas, registro.midia.ano, 
-                                                            registro.midia.tempo_episodio, elenco]
+        self.db_series.loc[self.db_series.index.max()+1] = [ind, registro.midia.episodios, registro.midia.temporadas, registro.midia.tempo_episodio, elenco]
 
     #Adiciona filme à base
     def adiciona_filme(self, registro):
@@ -171,7 +169,7 @@ class Base_Midias():
         else:
             diretores = None
         
-        self.db_filmes.loc[self.db_filmes.index.max()+1] = [ind, registro.midia.duracao, diretores, elenco, registro.midia.ano]
+        self.db_filmes.loc[self.db_filmes.index.max()+1] = [ind, registro.midia.duracao, diretores, elenco]
 
     #Adiciona livro à base
     def adiciona_livro(self, registro):
@@ -190,7 +188,7 @@ class Base_Midias():
         else:
             autores = None
         
-        self.db_livros.loc[self.db_livros.index.max()+1] = [ind, registro.midia.paginas, autores, registro.midia.ano]
+        self.db_livros.loc[self.db_livros.index.max()+1] = [ind, registro.midia.paginas, autores]
 
     #Remove série do DataFrame específico
     def remove_serie(self, num_id):
@@ -265,6 +263,10 @@ class Base_Midias():
         elif tipo == 'Filme':
             self.remove_filme(num_id)
             return
+
+    #Retorna os dataframes
+    def retorna_dataframes(self):
+        return self.db_registros, self.db_series, self.db_filmes, self.db_livros
 
     #Atualiza os arquivos .csv com os dataframes atuais
     def atualiza_arquivos(self):

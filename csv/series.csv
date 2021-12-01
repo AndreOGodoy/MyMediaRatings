@@ -1,6 +1,6 @@
-id;num_episodios;num_temporadas;ano_lancamento;tempo_por_ep;elenco
-0;6;1;2019;55;Michael Sheen, David Tennant, Frances McDormand, Jon Hamm
-1;188;9;2005;22;Steve Carell, Jenna Fischer, John Krasinski
-2;217;11;1993;45;David Duchovny, Gillian Anderson, Mitch Pileggi
-3;504;23;1999;60;Mariska Hargitay, Christopher Meloni, Ice-T
-4;9;1;2021;55;Lee Jung-jae, Park Hae-soo, Wi Ha-joon
+id;num_episodios;num_temporadas;tempo_por_ep;elenco
+0;6;1;55;Michael Sheen, David Tennant, Frances McDormand, Jon Hamm
+1;188;9;22;Steve Carell, Jenna Fischer, John Krasinski
+2;217;11;45;David Duchovny, Gillian Anderson, Mitch Pileggi
+3;504;23;60;Mariska Hargitay, Christopher Meloni, Ice-T
+4;9;1;55;Lee Jung-jae, Park Hae-soo, Wi Ha-joon
