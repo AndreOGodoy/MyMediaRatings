@@ -129,10 +129,12 @@ class View():
             tam = self._composicao.shape[0]
             self._composicao = self._composicao.loc[mascara[mascara].index.values]
 
-        self._composicao = self._composicao.dropna()
         self._filtros.append(coluna)
         if self._primeiro_filtro:
             self._primeiro_filtro = False
+
+    def remove_linhas_com_nan(self):
+        self._composicao = self._composicao.dropna()
 
     def __repr__(self) -> str:
         with pd.option_context('display.max_rows', None, 'display.max_columns', None):
