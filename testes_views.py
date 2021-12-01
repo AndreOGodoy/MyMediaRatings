@@ -43,7 +43,7 @@ class TestViews(TestCase):
 
     def test_numero_filtros_possiveis_nova_view(self):
         filtros_possiveis = self.view.obtem_filtros_possiveis()
-        self.assertEqual(len(filtros_possiveis), 13)
+        self.assertEqual(len(filtros_possiveis), 14)
 
     def test_filtra_por_aplica_filtro(self):
         self.view.filtra_por('duracao')
@@ -52,14 +52,14 @@ class TestViews(TestCase):
         self.assertEqual(filtros_aplicados, ['duracao'])
 
     def test_define_filtro_ambiguo(self):
-        # A coluna 'ano_lancamento' está presente em 3 tabelas
+        # A coluna 'id' está presente em 3 tabelas
         # Logo, é ambíguo filtrar pela mesma
 
         with self.assertRaises(FiltroAmbiguoException):
-            self.view.filtros = ['ano_lancamento']
+            self.view.filtros = ['id']
 
     def test_aplica_filtro_ambiguo(self):
-        self.assertRaises(FiltroAmbiguoException, self.view.filtra_por, 'ano_lancamento')
+        self.assertRaises(FiltroAmbiguoException, self.view.filtra_por, 'id')
 
     def test_define_filtro_inexistente(self):
         with self.assertRaises(FiltroInexistenteException):
