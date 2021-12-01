@@ -53,7 +53,7 @@ CACHE = _ViewCache()
 
 class View():
     _data: List[pd.DataFrame]
-    _filtros: [str]
+    _filtros: List[str]
 
     _composicao: pd.DataFrame
 
@@ -74,7 +74,7 @@ class View():
         return copy(self._filtros)
 
     @filtros.setter
-    def filtros(self, novos_filtros: [str]):
+    def filtros(self, novos_filtros: List[str]):
         for filtro in novos_filtros:
             coluna = self._obtem_coluna_do_filtro(filtro)
 
