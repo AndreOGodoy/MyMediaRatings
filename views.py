@@ -1,5 +1,6 @@
 import pandas as pd
 from copy import copy
+from functools import reduce
 from typing import List, Optional, Callable
 
 from base_dados import Base_Midias
@@ -52,22 +53,33 @@ class FiltroInexistenteException(Exception):
 CACHE = _ViewCache()
 
 class View():
-    _data: List[pd.DataFrame]
+    _data: pd.DataFrame
     _filtros: List[str]
 
     _composicao: pd.DataFrame
+
+    # Diferencia uma composição cujo nenhum item
+    # obedece os filtros de uma composição ainda
+    # não teve nenhum filtro adicionado
+    _primeiro_filtro: bool
 
     _instancia: _ViewCache
 
     def __init__(self):
         self._filtros = []
-        self._composicao = pd.DataFrame()
+
+        self._data = pd.DataFrame()
 
         self._instancia = CACHE
         self._sincroniza_db()
 
+        self._primeiro_filtro = True
+        self._composicao = pd.DataFrame()
+
     def _sincroniza_db(self):
-        self._data = self._instancia.obtem_dbs()
+        dbs = self._instancia.obtem_dbs()
+
+        self._data = reduce(lambda df1, df2: pd.merge(df1, df2, on='id', how='outer'), dbs)
 
     @property
     def filtros(self):
@@ -82,15 +94,8 @@ class View():
             self._filtros.append(filtro)
 
     def obtem_filtros_possiveis(self) -> List[str]:
-        colunas = []
-        for df in self._data:
-            colunas.extend(df.columns)
-
-        colunas_nao_ambiguas = [coluna for coluna in colunas \
-                                if colunas.count(coluna)==1]
-
-        return [filtro for filtro in colunas_nao_ambiguas \
-                if filtro not in self._filtros]
+        return [coluna for coluna in self._data.columns \
+                if coluna not in self.filtros]
 
     def _obtem_coluna_do_filtro(self, filtro: str) -> pd.Series:
         # Filtro já foi aplicado
@@ -98,32 +103,36 @@ class View():
             # TODO: Deve retornar erro ou não fazer nada?
             pass
         else:
-            colunas_obtidas = [df[filtro] for df in self._data \
-                               if filtro in df.columns]
-            n_colunas_obtidas = len(colunas_obtidas)
+            colunas_obtidas = [coluna for coluna in self._data.columns \
+                                   if coluna == filtro]
 
-            if n_colunas_obtidas == 0:
+            if len(colunas_obtidas) == 0:
                 raise FiltroInexistenteException(filtro)
 
             elif len(colunas_obtidas) > 1:
                 # TODO: Resolver este caso
                 raise FiltroAmbiguoException(filtro)
-                return self
 
-            # Deve ser sempre verdadeiro por causa dos dois if's acima
-            assert len(colunas_obtidas) == 1
-            return colunas_obtidas[0]
+            return self._data[filtro]
 
     def filtra_por(self, coluna: str, predicado: Optional[Callable] = None):
         alvo = self._obtem_coluna_do_filtro(coluna)
 
+        self._composicao[coluna] = alvo
+
         if predicado:
-            self._composicao[coluna] = alvo.loc[predicado]
-        else:
-            self._composicao[coluna] = alvo
+            mascara = alvo.apply(predicado)
+
+            if not self._primeiro_filtro:
+                mascara = mascara.iloc[self._composicao.index]
+
+            tam = self._composicao.shape[0]
+            self._composicao = self._composicao.loc[mascara[mascara].index.values]
 
         self._composicao = self._composicao.dropna()
         self._filtros.append(coluna)
+        if self._primeiro_filtro:
+            self._primeiro_filtro = False
 
     def __repr__(self) -> str:
         with pd.option_context('display.max_rows', None, 'display.max_columns', None):
