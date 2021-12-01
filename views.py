@@ -126,4 +126,6 @@ class View():
         self._filtros.append(coluna)
 
     def __repr__(self) -> str:
-        return self._composicao.__repr__()
+        with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+            return self._composicao.__repr__()
+
