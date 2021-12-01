@@ -27,7 +27,8 @@ def cria_db_teste() -> List[DataFrame]:
         df = pd.read_csv(caminho_csv, sep=';')
         dfs.append(df)
 
-    return dfs
+    return reduce(lambda df1, df2: pd.merge(df1, df2, on='id', how='outer'),
+                  dfs)
 
 def _sincroniza_db(self):
     self._data = cria_db_teste()
@@ -43,23 +44,13 @@ class TestViews(TestCase):
 
     def test_numero_filtros_possiveis_nova_view(self):
         filtros_possiveis = self.view.obtem_filtros_possiveis()
-        self.assertEqual(len(filtros_possiveis), 14)
+        self.assertEqual(len(filtros_possiveis), 17)
 
     def test_filtra_por_aplica_filtro(self):
         self.view.filtra_por('duracao')
         filtros_aplicados = self.view.filtros
 
         self.assertEqual(filtros_aplicados, ['duracao'])
-
-    def test_define_filtro_ambiguo(self):
-        # A coluna 'id' está presente em 3 tabelas
-        # Logo, é ambíguo filtrar pela mesma
-
-        with self.assertRaises(FiltroAmbiguoException):
-            self.view.filtros = ['id']
-
-    def test_aplica_filtro_ambiguo(self):
-        self.assertRaises(FiltroAmbiguoException, self.view.filtra_por, 'id')
 
     def test_define_filtro_inexistente(self):
         with self.assertRaises(FiltroInexistenteException):
