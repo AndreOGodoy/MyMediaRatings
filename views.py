@@ -10,18 +10,19 @@ from base_dados import Base_Midias
 # Ela é instanciada no momento que o módulo for importado pelo cliente,
 # fazendo com que carregue os dados do banco de dados
 #
-# Seu objetivo é impedir que haja um acesso ao DB, e o carregamento de seu
-# conteúdo à memória, à cada nova construção de View()
+# Ela é uma instância única compartilhada entre todas as Views, e
+# Seu objetivo é impedir que haja varios carregamentos
+# distindos da mesma informação à memória
+
 class _ViewCache():
     _instancia: Base_Midias
     _dfs: List[pd.DataFrame]
 
     def __init__(self):
         self._dfs = []
-        self._instancia = Base_Midias('csv/')
 
     def atualiza(self):
-        self._instancia.atualiza_arquivos()
+        self._instancia = Base_Midias('csv/')
         self._dfs = self._instancia.retorna_dataframes()
 
     def obtem_dbs(self):
