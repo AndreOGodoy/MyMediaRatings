@@ -37,20 +37,24 @@ while(True):
 		metodo = getattr(acoes[acao][0], chamada)
 		metodo(interface)
 	elif acao == 'adicionar':
-		dados_registro = input(f"Por favor informe os dados da(o) {midia}: ")
+		interface.input_midia(midia)
 
-		dados = dados_registro.split()
+		nova_midia = interface.cria_midia(midia)
+		interface.limpa_dados() #linpa os dados da midia para caso o usuario queira adicionar de novo no futuro
+		
+		nota, comentario, booleano = interface.input_registro(midia)
 
-		print(dados[:-3])
-
-		nova_midia = interface.cria_midia(midia, dados[:-3])
-		registro_novo = Registro(dados[-3], nova_midia, dados[-2], dados[-1])
+		registro_novo = Registro(nota, nova_midia, comentario, booleano)
 
 		metodo = getattr(acoes[acao][0], chamada)
 		metodo(interface._db, registro_novo)
+
+		interface._db.atualiza_arquivos()
+		interface._view = View()
 	elif acao == 'remover':
 		identificador = input(f"Digite o nome da(o) {midia}: ")
 
 		metodo = getattr(acoes[acao][0], chamada)
 		metodo(interface._db, identificador)
 
+		interface._view._instancia.atualizar_arquivos()
