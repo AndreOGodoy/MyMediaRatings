@@ -30,17 +30,6 @@ class _ViewCache():
 
         return self._dfs
 
-class FiltroAmbiguoException(Exception):
-    filtro_ambiguo: str
-
-    def __init__(self, filtro_ambiguo: str):
-        self.filtro_ambiguo = filtro_ambiguo
-
-        mensagem = f'O filtro \'{filtro_ambiguo}\' é ambíguo:'
-        mensagem += ' existe mais de uma tabela com esta coluna no banco de dados'
-
-        super().__init__(mensagem)
-
 class FiltroInexistenteException(Exception):
     filtro_inexistente: str
 
@@ -109,10 +98,6 @@ class View():
 
             if len(colunas_obtidas) == 0:
                 raise FiltroInexistenteException(filtro)
-
-            elif len(colunas_obtidas) > 1:
-                # TODO: Resolver este caso
-                raise FiltroAmbiguoException(filtro)
 
             return self._data[filtro]
 
