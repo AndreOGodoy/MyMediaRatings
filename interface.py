@@ -1,4 +1,5 @@
 from views import *
+from base_dados import *
 from midia import *
 
 class Interface():
@@ -87,8 +88,6 @@ class Interface():
 
 	def cria_midia(self, midia):
 		nova_midia = None
-
-		print(self._dados_midia)
 
 		if midia == 'livro':
 			nova_midia = Livro(*self._dados_midia)

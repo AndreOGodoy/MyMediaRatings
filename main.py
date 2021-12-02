@@ -47,9 +47,9 @@ while(True):
 		registro_novo = Registro(nota, nova_midia, comentario, booleano)
 
 		metodo = getattr(acoes[acao][0], chamada)
-		metodo(interface._db, registro_novo)
+		metodo(interface._view._instancia._instancia, registro_novo)
 
-		interface._db.atualiza_arquivos()
+		interface._view._instancia._instancia.atualiza_arquivos()
 		interface._view = View()
 	elif acao == 'remover':
 		identificador = input(f"Digite o nome da(o) {midia}: ")
