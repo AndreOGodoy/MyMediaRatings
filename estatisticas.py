@@ -1,6 +1,4 @@
 import pandas as pd
-from views import *
-
 
 # Classe Estatistica serve para mostrar informações gerais
 # a partir de um dataframe
@@ -22,126 +20,143 @@ class Estatistica:
     def minimo(self, tipo):
         return(min(self.info_estats[tipo]))
 
+#Estatísticas para registro geral
 class EstRegistros(Estatistica):
     def __init__(self, df_registro):
         super().__init__(df_registro)
 
     def media_notas(self):
-        print("A nota média das mídias selecionadas pelo filtro é:")
-        print(self.media('nota'))
+        mensagem = "A nota média das mídias selecionadas pelo filtro é: "
+        media = self.media('nota')
+        return(mensagem + str(media))
 
     def moda_notas(self):
-        print("Nota(s) atribuída(s) com mais frequência:")
-        print(self.moda('nota'))
+        mensagem = "Nota(s) atribuída(s) com mais frequência: "
+        moda = self.moda('nota')
+        return(mensagem + moda)
 
     def maior_nota(self):
-        print("A MAIOR nota atribuída às mídias selecionadas pelo filtro é:")
-        print(self.maximo('nota'))
+        mensagem = "A MAIOR nota atribuída às mídias selecionadas pelo filtro é: "
+        maximo = self.maximo('nota')
+        return(mensagem + str(maximo))
 
     def menor_nota(self):
-        print("A MENOR nota atribuída às mídias selecionadas pelo filtro é:")
-        print(self.minimo('nota'))
+        mensagem = "A MENOR nota atribuída às mídias selecionadas pelo filtro é: "
+        minimo = self.minimo('nota')
+        return(mensagem + str(minimo))
 
     def midia_mais_consumida(self):
-        print("Mídia(s) mais consumida(s):")
-        print(self.moda('tipo_midia'))
+        mensagem = "Mídia(s) mais consumida(s): "
+        midias = self.moda('tipo_midia')
+        return(mensagem + midias)
 
     def genero_mais_consumido(self):
-        print("Gênero(s) mais consumido(s):")
-        print(self.moda('genero'))
+        mensagem = "Gênero(s) mais consumido(s): "
+        generos = self.moda('genero')
+        return(mensagem + generos)
 
     def ano_com_mais_lancamentos(self):
-        print("Ano(s) com maior número de lançamentos:")
-        print(self.moda('ano_lancamento'))
+        mensagem = "Ano(s) com maior número de lançamentos: "
+        anos = self.moda('ano_lancamento')
+        return(mensagem + anos)
 
     def est_geral(self):
-        self.media_notas()
+        print(self.media_notas())
         print("\n")
-        self.moda_notas()
+        print(self.moda_notas())
         print("\n")
-        self.maior_nota()
+        print(self.maior_nota())
         print("\n")
-        self.menor_nota()
+        print(self.menor_nota())
         print("\n")
-        self.midia_mais_consumida()
+        print(self.midia_mais_consumida())
         print("\n")
-        self.genero_mais_consumido()
+        print(self.genero_mais_consumido())
         print("\n")
-        self.ano_com_mais_lancamentos()
+        print(self.ano_com_mais_lancamentos())
         print("\n")
 
+#Estatísticas exclusivas de livros
 class EstLivros(Estatistica):
     def __init__(self, df_registro):
         super().__init__(df_registro)
 
     def media_num_paginas(self):
-        print("O número de páginas medio dos livros lidos é:")
-        print(self.media('num_paginas'), ' páginas')
+        mensagem = "O número de páginas médio dos livros lidos é: "
+        paginas = str(self.media('num_paginas')) + ' páginas'
+        return(mensagem + paginas)
+
 
     def autor_mais_lido(self):
-        print("Autor(es) mais lido(s):")
-        print(self.moda('autor'))
+        mensagem = "Autor(es) mais lido(s): "
+        autor = self.moda('autor')
+        return(mensagem + autor)
 
     def est_geral_livros(self):
-        self.media_num_paginas()
+        print(self.media_num_paginas())
         print("\n")
-        self.autor_mais_lido()
+        print(self.autor_mais_lido())
         print("\n")
 
+#Estatísticas exclusivas de filmes
 class EstFilmes(Estatistica):
     def __init__(self, df_registro):
         super().__init__(df_registro)
 
     def duracao_media(self):
-        print("A duração média dos filmes selecionados é:")
-        print(self.media('duracao'), ' minutos')
+        mensagem = "A duração média dos filmes selecionados é: "
+        duracao = str(self.media('duracao')) + ' minutos'
+        return(mensagem + duracao)
 
     def diretor_mais_visto(self):
-        print("Você assistiu mais filmes do(s) diretor(es):")
-        print(self.moda('diretor'))
+        mensagem = "Você assistiu mais filmes do(s) diretor(es): "
+        diretor = self.moda('diretor')
+        return(mensagem + diretor)
 
     def est_geral_filmes(self):
-        self.duracao_media()
+        print(self.duracao_media())
         print("\n")
-        self.diretor_mais_visto()
+        print(self.diretor_mais_visto())
         print("\n")
 
+#Estatísticas exclusivas de séries
 class EstSeries(Estatistica):
     def __init__(self, df_registro):
         super().__init__(df_registro)
 
     def num_medio_episodios(self):
-        print("O número médio de episódios das séries vistas é:")
-        print(self.media('num_episodios'))
+        mensagem = "O número médio de episódios das séries vistas é: "
+        episodios = str(self.media('num_episodios'))
+        return(mensagem + episodios)
 
     def serie_mais_episodios(self):
-        print("Maior número de episódios assistidos:")
-        print(self.maximo('num_episodios'))
+        mensagem = "Maior número de episódios assistidos: "
+        maior = str(self.maximo('num_episodios'))
+        return(mensagem + maior)
 
     def num_medio_temporadas(self):
-        print("O número médio de temporadas das séries vistas é:")
-        print(self.media('num_temporadas'))
+        mensagem = "O número médio de temporadas das séries vistas é: "
+        temporadas = str(self.media('num_temporadas'))
+        return(mensagem + temporadas)
 
     def serie_mais_temporadas(self):
-        print("Maior número de temporadas assistidas:")
-        print(self.maximo('num_temporadas'))
+        mensagem = "Maior número de temporadas assistidas: "
+        maistemp = str(self.maximo('num_temporadas'))
+        return(mensagem + maistemp)
 
     def tempo_medio_episodio(self):
-        print("O tempo médio dos episódios das séries selecionadas é de:")
-        print(self.media('tempo_por_ep'), ' minutos')
+        mensagem = "O tempo médio dos episódios das séries selecionadas é de: "
+        tempo = str(self.media('tempo_por_ep')) + ' minutos'
+        return(mensagem + tempo)
 
     def est_geral_series(self):
-        self.num_medio_episodios()
+        print(self.num_medio_episodios())
         print("\n")
-        self.serie_mais_episodios()
+        print(self.serie_mais_episodios())
         print("\n")
-        self.num_medio_temporadas()
+        print(self.num_medio_temporadas())
         print("\n")
-        self.serie_mais_temporadas()
+        print(self.serie_mais_temporadas())
         print("\n")
-        self.tempo_medio_episodio()
+        print(self.tempo_medio_episodio())
         print("\n")
-
-
-
-    
