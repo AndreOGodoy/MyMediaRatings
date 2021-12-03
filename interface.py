@@ -9,28 +9,49 @@ class Interface():
 		self._dados_midia = []
 
 	def lista_livro(self):
-		self._view.filtros = ['nome', 'num_paginas', 'autor', 'nota']
-		
-		print(self._view)
+		filtros = ['nome', 'num_paginas', 'autor', 'nota']
+
+		for filtro in filtros:
+			self._view.filtra_por(filtro)
+
+		pred = lambda x: x == 'Livro'
+		self._view.filtra_por('tipo_midia', pred)
+		self._view._composicao.drop('tipo_midia', axis=1, inplace=True)
+
+		print(self._view._composicao)
 		print()
 
-		self._view.filtros = []
+		self._view = View()
 
 	def lista_filme(self):
-		self._view.filtros = ['nome', 'duracao', 'diretor', 'nota']
-		
-		print(self._view)
+		filtros = ['nome', 'duracao', 'diretor', 'nota', 'elenco_y']
+
+		for filtro in filtros:
+			self._view.filtra_por(filtro)
+
+		pred = lambda x: x == 'Filme'
+		self._view.filtra_por('tipo_midia', pred)
+		self._view._composicao.drop('tipo_midia', axis=1, inplace=True)
+
+		print(self._view._composicao)
 		print()
 
-		self._view.filtros = []
+		self._view = View()
 
 	def lista_serie(self):
-		self._view.filtros = ['nome', 'num_episodios', 'num_temporadas', 'tempo_por_ep', 'nota']
-		
-		print(self._view)
+		filtros = ['nome', 'num_episodios', 'num_temporadas', 'tempo_por_ep', 'nota', 'elenco_x']
+
+		for filtro in filtros:
+			self._view.filtra_por(filtro)
+
+		pred = lambda x: x == 'Série'
+		self._view.filtra_por('tipo_midia', pred)
+		self._view._composicao.drop('tipo_midia', axis=1, inplace=True)
+
+		print(self._view._composicao)
 		print()
 
-		self._view.filtros = []
+		self._view = View()
 
 	def limpa_dados(self):
 		self._dados_midia = []
@@ -74,6 +95,8 @@ class Interface():
 
 
 	def input_registro(self, midia):
+		self.limpa_dados()
+
 		nota = int(input(f"De uma nota para a(o) {midia}: "))
 		comentario = input(f"Deixe um comentario sobre a(o) {midia}: ")
 		consumiu = input(f"Você ja leu/viu a(o) {midia}? (S/N): ")

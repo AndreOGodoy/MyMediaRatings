@@ -4,8 +4,7 @@ import pandas as pd
 from registro import Registro
 from interface import *
 
-def help():
-	print("Por favor, digite uma acao e uma midia desejada")
+from utils import *
 
 acoes = {
 	'listar': (Interface, 'lista'),
@@ -13,10 +12,10 @@ acoes = {
 	'remover': (Base_Midias, 'remove')
 }
 
-midias = {
-	'livro': '_livro',
-	'serie': '_serie',
-	'filme': '_filme',
+tipos_midia = {
+	'livro': 'Livro',
+	'serie': 'Série',
+	'filme': 'Filme',
 }
 
 interface = Interface()
@@ -31,7 +30,15 @@ while(True):
 		continue
 
 	acao, midia = comando.split()
-	chamada = acoes[acao][1] + midias[midia]
+
+	if acao not in acoes:
+		acao_invalida(acoes)	
+		continue
+	elif midia not in tipos_midia:
+		midia_invalida(tipos_midia)
+		continue
+
+	chamada = acoes[acao][1] + '_' + midia 
 
 	if acao == 'listar':
 		metodo = getattr(acoes[acao][0], chamada)
@@ -40,21 +47,20 @@ while(True):
 		interface.input_midia(midia)
 
 		nova_midia = interface.cria_midia(midia)
-		interface.limpa_dados() #linpa os dados da midia para caso o usuario queira adicionar de novo no futuro
 		
 		nota, comentario, booleano = interface.input_registro(midia)
 
 		registro_novo = Registro(nota, nova_midia, comentario, booleano)
 
 		metodo = getattr(acoes[acao][0], chamada)
-		metodo(interface._view._instancia._instancia, registro_novo)
+		metodo(interface._db, registro_novo)
 
-		interface._view._instancia._instancia.atualiza_arquivos()
+		interface._db.atualiza_arquivos()
 		interface._view = View()
 	elif acao == 'remover':
-		identificador = input(f"Digite o nome da(o) {midia}: ")
+		nome = input(f"Digite o nome da(o) {midia}: ")
 
-		metodo = getattr(acoes[acao][0], chamada)
-		metodo(interface._db, identificador)
+		interface._db.remove_registro_nome(nome, tipos_midia[midia])
 
-		interface._view._instancia.atualizar_arquivos()
+		interface._db.atualiza_arquivos()
+		interface._view = View()
