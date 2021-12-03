@@ -1,5 +1,6 @@
 from views import *
 from base_dados import *
+from estatisticas import *
 from midia import *
 
 class Interface():
@@ -7,16 +8,30 @@ class Interface():
 		self._view = View()
 		self._db = Base_Midias('csv/')
 		self._dados_midia = []
+	
+	def filtrar_midia(self, filtros, midia=None):
+		for filtro in filtros:
+			self._view.filtra_por(filtro)
+
+		if midia != None:
+			pred = lambda x: x == midia
+			self._view.filtra_por('tipo_midia', pred)
+			self._view._composicao.drop('tipo_midia', axis=1, inplace=True)
+
+	def lista_geral(self):
+		filtros = ['nome', 'genero', 'ano_lancamento', 'tipo_midia', 'nota', 'ja_consumiu']
+
+		self.filtrar_midia(filtros)
+
+		print(self._view._composicao)
+		print()
+
+		self._view = View()	
 
 	def lista_livro(self):
 		filtros = ['nome', 'num_paginas', 'autor', 'nota']
 
-		for filtro in filtros:
-			self._view.filtra_por(filtro)
-
-		pred = lambda x: x == 'Livro'
-		self._view.filtra_por('tipo_midia', pred)
-		self._view._composicao.drop('tipo_midia', axis=1, inplace=True)
+		self.filtrar_midia(filtros, 'Livro')
 
 		print(self._view._composicao)
 		print()
@@ -26,12 +41,7 @@ class Interface():
 	def lista_filme(self):
 		filtros = ['nome', 'duracao', 'diretor', 'nota', 'elenco_y']
 
-		for filtro in filtros:
-			self._view.filtra_por(filtro)
-
-		pred = lambda x: x == 'Filme'
-		self._view.filtra_por('tipo_midia', pred)
-		self._view._composicao.drop('tipo_midia', axis=1, inplace=True)
+		self.filtrar_midia(filtros, 'Filme')
 
 		print(self._view._composicao)
 		print()
@@ -41,15 +51,63 @@ class Interface():
 	def lista_serie(self):
 		filtros = ['nome', 'num_episodios', 'num_temporadas', 'tempo_por_ep', 'nota', 'elenco_x']
 
-		for filtro in filtros:
-			self._view.filtra_por(filtro)
-
-		pred = lambda x: x == 'Série'
-		self._view.filtra_por('tipo_midia', pred)
-		self._view._composicao.drop('tipo_midia', axis=1, inplace=True)
+		self.filtrar_midia(filtros, 'Série')
 
 		print(self._view._composicao)
 		print()
+
+		self._view = View()
+	
+	def comentario_midia(self, midia=None):
+		self.filtrar_midia(['nome', 'comentario'], midia)
+		self._view.remove_linhas_com_nan()
+
+		print(self._view._composicao)
+		print()
+
+		self._view = View()
+	
+	def estatisticas_geral(self):
+		filtros = ['nome', 'genero', 'ano_lancamento', 'tipo_midia', 'nota', 'ja_consumiu']
+
+		self.filtrar_midia(filtros)
+
+		est = EstRegistros(self._view._composicao)
+
+		est.est_geral()
+
+		self._view = View()
+
+	def estatisticas_livro(self):
+		filtros = ['nome', 'num_paginas', 'autor', 'nota']
+
+		self.filtrar_midia(filtros, 'Livro')
+
+		est = EstLivros(self._view._composicao)
+
+		est.est_geral_livros()
+
+		self._view = View()
+
+	def estatisticas_serie(self):
+		filtros = ['nome', 'num_episodios', 'num_temporadas', 'tempo_por_ep', 'nota', 'elenco_x']
+
+		self.filtrar_midia(filtros, 'Série')
+
+		est = EstSeries(self._view._composicao)
+
+		est.est_geral_series()
+
+		self._view = View()
+
+	def estatisticas_filme(self):
+		filtros = ['nome', 'duracao', 'diretor', 'nota', 'elenco_y']
+
+		self.filtrar_midia(filtros, 'Filme')
+
+		est = EstFilmes(self._view._composicao)
+
+		est.est_geral_filmes()
 
 		self._view = View()
 

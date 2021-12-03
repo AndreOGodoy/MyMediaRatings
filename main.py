@@ -9,19 +9,22 @@ from utils import *
 acoes = {
 	'listar': (Interface, 'lista'),
 	'adicionar': (Base_Midias, 'adiciona'),
-	'remover': (Base_Midias, 'remove')
+	'remover': (Base_Midias, 'remove'),
+	'mostrar': (Interface, 'estatisticas'),
+	'comentarios': (Interface, 'comentario')
 }
 
 tipos_midia = {
 	'livro': 'Livro',
 	'serie': 'Série',
 	'filme': 'Filme',
+	'geral': None
 }
 
 interface = Interface()
 
 while(True):
-	comando = input("Digite um comando: ")
+	comando = input("Digite um comando (listar, adicionar, remover, comentarios): ")
 
 	if comando == "sair":
 		break
@@ -64,3 +67,9 @@ while(True):
 
 		interface._db.atualiza_arquivos()
 		interface._view = View()
+	elif acao == 'mostrar':
+		metodo = getattr(acoes[acao][0], chamada)
+		metodo(interface)
+	elif acao == 'comentarios':
+		interface.comentario_midia(tipos_midia[midia])
+
