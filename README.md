@@ -15,7 +15,7 @@
 ## Funcionalidades
 
 - [ ] Banco de dados de mídias
-- [ ] Possibilidade dar notas e fazer comentários nas mídias consumidas
+- [ ] Possibilidade de dar notas e fazer comentários nas mídias consumidas
 - [ ] Possibilidade de agrupar mídias em listagens variadas
 - [ ] Estatísticas relevantes:
 	- [ ] Nota média por categoria
