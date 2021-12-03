@@ -7,19 +7,35 @@ class Estatistica:
     def __init__(self, df_registro):
         self.info_estats = df_registro
 
+    #Função que define se os valores da coluna testada são possíveis
+    def checa_validade(self, tipo):
+        numero_linhas = len(self.info_estats)
+        if (self.info_estats[tipo].isnull().sum() == numero_linhas) or ((self.info_estats[tipo] == '').sum() == numero_linhas):
+            return True
+        else:
+            return False
+
     def media(self, tipo):
+        if self.checa_validade(tipo):
+            raise Exception("Não existe valores válidos do tipo")
         return(round(self.info_estats[tipo].mean(),2))
 
     def moda(self, tipo):
+        if self.checa_validade(tipo):
+            raise Exception("Não existe valores válidos do tipo")
         df = self.info_estats[tipo].mode()
         #Transforma o df recebido em lista para padronizar a saída
         lista = list(df)
         return(', '.join(str(x) for x in lista))
 
     def maximo(self, tipo):
+        if self.checa_validade(tipo):
+            raise Exception("Não existe valores válidos do tipo")
         return(max(self.info_estats[tipo]))
 
     def minimo(self, tipo):
+        if self.checa_validade(tipo):
+            raise Exception("Não existe valores válidos do tipo")
         return(min(self.info_estats[tipo]))
 
 #Estatísticas para registro geral

@@ -24,7 +24,7 @@ tipos_midia = {
 interface = Interface()
 
 while(True):
-	comando = input("Digite um comando (listar, adicionar, remover, comentarios): ")
+	comando = input("Digite um comando (listar, mostrar, adicionar, remover, comentarios): ")
 
 	if comando == "sair":
 		break

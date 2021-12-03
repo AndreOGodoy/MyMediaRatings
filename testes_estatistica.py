@@ -1,9 +1,11 @@
 from typing import ChainMap
+from numpy.core.numeric import NaN
 from numpy.testing._private.utils import assert_equal
 from estatisticas import *
 
 import pandas as pd
 from pandas import DataFrame
+import numpy as np
 
 from unittest import TestCase
 
@@ -25,8 +27,6 @@ class TestEstatisticasSimples(TestCase):
         chamada = self.est.media_notas()
         self.assertEqual(chamada, esperada)
     
-    #Testes que retornam a moda podem retornar mais de um valor, logo
-    # devemos estar atentos aos espacos obtidos no assert. 
     def test_nota_mais_atribuida_valido(self):
         esperada = "Nota(s) atribuída(s) com mais frequência: 10.0"
         chamada = self.est.moda_notas()
@@ -127,3 +127,45 @@ class TestEstSeries(TestCase):
         esperada = "O tempo médio dos episódios das séries selecionadas é de: 38.33 minutos"
         chamada = self.estSeries.tempo_medio_episodio()
         self.assertEqual(chamada, esperada)
+
+class TestException(TestCase):
+    def setUp(self):
+        df = pd.DataFrame({'nome': ['Good Omens', 'The office', 'Vingadores: Ultimato', '1984'],
+        'genero': ['', '', '', ''],
+        'ano_lancamento': [np.NaN, np.NaN, np.NaN, np.NaN],
+        'tipo_midia': ['', '', '', ''],
+        'nota': [np.NaN, np.NaN, np.NaN, np.NaN],
+        'comentario': ['com1', 'com2', 'com3', 'com4'],
+        'ja_consumiu': [True, True, True, True]})
+
+        self.est = EstRegistros(df)
+
+    def test_media_notas_exception(self):
+        with self.assertRaises(Exception):
+            self.est.media_notas()
+    
+    def test_nota_mais_atribuida_exception(self):
+        with self.assertRaises(Exception):
+            self.est.moda_notas()
+
+    def test_maior_nota_atribuida_exception(self):
+        with self.assertRaises(Exception):
+            self.est.maior_nota()
+
+    def test_menor_nota_atribuida_exception(self):
+        with self.assertRaises(Exception):
+            self.est.menor_nota()
+
+    def test_tipo_midia_mais_consumido_exception(self):
+        with self.assertRaises(Exception):
+            self.est.midia_mais_consumida()
+
+    def test_genero_mais_consumido_exception(self):
+        with self.assertRaises(Exception):
+            self.est.genero_mais_consumido()
+
+    def test_ano_com_mais_lancamentos_exception(self):
+        with self.assertRaises(Exception):
+            self.est.ano_com_mais_lancamentos()
+
+    
