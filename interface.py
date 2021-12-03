@@ -4,9 +4,9 @@ from estatisticas import *
 from midia import *
 
 class Interface():
-	def __init__(self):
+	def __init__(self, local_base='csv/'):
 		self._view = View()
-		self._db = Base_Midias('csv/')
+		self._db = Base_Midias(local_base)
 		self._dados_midia = []
 	
 	def filtrar_midia(self, filtros, midia=None):

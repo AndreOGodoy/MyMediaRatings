@@ -1,5 +1,5 @@
 def acao_invalida(acoes):
-	print("Essa acao nao e valida. As acoes validas sao: ", end='')
+	print("Essa ação não é válida. As ações válidas são: ", end='')
 		
 	for	key, value in acoes.items():
 		print(key, end=' ')
@@ -7,7 +7,7 @@ def acao_invalida(acoes):
 	print()
 
 def midia_invalida(midias):
-	print("Essa midia nao e valida. As midias validas sao: ", end='')
+	print("Essa mídia não é válida. As mídias válidas são: ", end='')
 		
 	for	key, value in midias.items():
 		print(key, end=' ')
@@ -15,4 +15,4 @@ def midia_invalida(midias):
 	print()
 
 def help():
-	print("Por favor, digite uma acao e uma midia valida")
+	print("Por favor, digite uma ação e uma mídia válida")
