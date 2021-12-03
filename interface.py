@@ -175,6 +175,6 @@ class Interface():
 		elif midia == 'filme':
 			nova_midia = Filme(*self._dados_midia)
 		elif midia == 'serie':
-			nova_midia = series(*self._dados_midia)
+			nova_midia = Serie(*self._dados_midia)
  		
 		return nova_midia
