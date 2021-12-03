@@ -28,7 +28,7 @@ class TestEstatisticasSimples(TestCase):
     #Testes que retornam a moda podem retornar mais de um valor, logo
     # devemos estar atentos aos espacos obtidos no assert. 
     def test_nota_mais_atribuida_valido(self):
-        esperada = "Nota(s) atribuída(s) com mais frequência:  10.0"
+        esperada = "Nota(s) atribuída(s) com mais frequência: 10.0"
         chamada = self.est.moda_notas()
         self.assertEqual(chamada, esperada)
 
@@ -43,18 +43,18 @@ class TestEstatisticasSimples(TestCase):
         self.assertEqual(chamada, esperada)
 
     def test_tipo_midia_mais_consumido_valido(self):
-        esperada = "Mídia(s) mais consumida(s):  Série"
+        esperada = "Mídia(s) mais consumida(s): Série"
         chamada = self.est.midia_mais_consumida()
         self.assertEqual(chamada, esperada)
 
 
     def test_genero_mais_consumido_valido(self):
-        esperada = "Gênero(s) mais consumido(s):  Aventura\n  Comédia\n    Drama\n Fantasia"
+        esperada = "Gênero(s) mais consumido(s): Aventura, Comédia, Drama, Fantasia"
         chamada = self.est.genero_mais_consumido()
         self.assertEqual(chamada, esperada)
 
     def test_ano_com_mais_lancamentos_valido(self):
-        esperada = "Ano(s) com maior número de lançamentos:  2019"
+        esperada = "Ano(s) com maior número de lançamentos: 2019"
         chamada = self.est.ano_com_mais_lancamentos()
         self.assertEqual(chamada, esperada)
 
@@ -72,7 +72,7 @@ class TestEstLivros(TestCase):
         self.assertEqual(chamada, esperada)
 
     def test_autor_mais_lido_valido(self):
-        esperada = "Autor(es) mais lido(s):  Tolkien"
+        esperada = "Autor(es) mais lido(s): Tolkien"
         chamada = self.estLivros.autor_mais_lido()
         self.assertEqual(chamada, esperada)
 
@@ -90,7 +90,7 @@ class TestEstFilmes(TestCase):
         self.assertEqual(chamada, esperada)
 
     def test_diretor_mais_visto_valido(self):
-        esperada = "Você assistiu mais filmes do(s) diretor(es):  Russo Brothers"
+        esperada = "Você assistiu mais filmes do(s) diretor(es): Russo Brothers"
         chamada = self.estFilmes.diretor_mais_visto()
         self.assertEqual(chamada, esperada)
 

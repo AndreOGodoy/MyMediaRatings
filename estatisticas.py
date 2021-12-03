@@ -12,7 +12,9 @@ class Estatistica:
 
     def moda(self, tipo):
         df = self.info_estats[tipo].mode()
-        return(df.to_string(index=False))
+        #Transforma o df recebido em lista para padronizar a saída
+        lista = list(df)
+        return(', '.join(str(x) for x in lista))
 
     def maximo(self, tipo):
         return(max(self.info_estats[tipo]))
