@@ -79,7 +79,7 @@ class EstRegistros(Estatistica):
         print("\n")
 
 #Estatísticas exclusivas de livros
-class EstLivros(Estatistica):
+class EstLivros(EstRegistros):
     def __init__(self, df_registro):
         super().__init__(df_registro)
 
@@ -99,9 +99,17 @@ class EstLivros(Estatistica):
         print("\n")
         print(self.autor_mais_lido())
         print("\n")
+        print(self.media_notas())
+        print("\n")
+        print(self.moda_notas())
+        print("\n")
+        print(self.maior_nota())
+        print("\n")
+        print(self.menor_nota())
+        print("\n")
 
 #Estatísticas exclusivas de filmes
-class EstFilmes(Estatistica):
+class EstFilmes(EstRegistros):
     def __init__(self, df_registro):
         super().__init__(df_registro)
 
@@ -120,9 +128,17 @@ class EstFilmes(Estatistica):
         print("\n")
         print(self.diretor_mais_visto())
         print("\n")
+        print(self.media_notas())
+        print("\n")
+        print(self.moda_notas())
+        print("\n")
+        print(self.maior_nota())
+        print("\n")
+        print(self.menor_nota())
+        print("\n")
 
 #Estatísticas exclusivas de séries
-class EstSeries(Estatistica):
+class EstSeries(EstRegistros):
     def __init__(self, df_registro):
         super().__init__(df_registro)
 
@@ -161,4 +177,12 @@ class EstSeries(Estatistica):
         print(self.serie_mais_temporadas())
         print("\n")
         print(self.tempo_medio_episodio())
+        print("\n")
+        print(self.media_notas())
+        print("\n")
+        print(self.moda_notas())
+        print("\n")
+        print(self.maior_nota())
+        print("\n")
+        print(self.menor_nota())
         print("\n")
