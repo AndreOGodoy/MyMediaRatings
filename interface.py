@@ -19,6 +19,7 @@ class Interface():
 			self._view._composicao.drop('tipo_midia', axis=1, inplace=True)
 
 	def lista_geral(self):
+		self._view = View() #atualiza a view, limpando os outros filtros	
 		filtros = ['nome', 'genero', 'ano_lancamento', 'tipo_midia', 'nota', 'ja_consumiu']
 
 		self.filtrar_midia(filtros)
@@ -26,9 +27,8 @@ class Interface():
 		print(self._view._composicao)
 		print()
 
-		self._view = View()	
-
 	def lista_livro(self):
+		self._view = View()
 		filtros = ['nome', 'num_paginas', 'autor', 'nota']
 
 		self.filtrar_midia(filtros, 'Livro')
@@ -36,9 +36,10 @@ class Interface():
 		print(self._view._composicao)
 		print()
 
-		self._view = View()
 
 	def lista_filme(self):
+		self._view = View() 
+
 		filtros = ['nome', 'duracao', 'diretor', 'nota', 'elenco_y']
 
 		self.filtrar_midia(filtros, 'Filme')
@@ -46,26 +47,22 @@ class Interface():
 		print(self._view._composicao)
 		print()
 
-		self._view = View()
-
 	def lista_serie(self):
+		self._view = View()
 		filtros = ['nome', 'num_episodios', 'num_temporadas', 'tempo_por_ep', 'nota', 'elenco_x']
 
 		self.filtrar_midia(filtros, 'Série')
 
 		print(self._view._composicao)
 		print()
-
-		self._view = View()
 	
 	def comentario_midia(self, midia=None):
+		self._view = View()
 		self.filtrar_midia(['nome', 'comentario'], midia)
 		self._view.remove_linhas_com_nan()
 
 		print(self._view._composicao)
 		print()
-
-		self._view = View()
 	
 	def estatisticas_geral(self):
 		filtros = ['nome', 'genero', 'ano_lancamento', 'tipo_midia', 'nota', 'ja_consumiu']

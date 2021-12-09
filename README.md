@@ -27,7 +27,7 @@
 
 - Ao executar o programa, o usuário tem diversas opções acessíveis pela linha de comando:
 	- listar -> mostra todos os dados das mídias de acordo com o filtro fornecido (exceto comentários)
-	- mostrar -> mostra as estatísticas relevantes de acordo com o filtro fornecido
+	- estatisticas -> mostra as estatísticas relevantes de acordo com o filtro fornecido
 	- adicionar -> adiciona uma mídia no banco de dados
 	- remover -> remove uma mídia presente no banco de dados
 	- comentário -> mostra os comentários do usuário de acordo com o filtro fornecido
