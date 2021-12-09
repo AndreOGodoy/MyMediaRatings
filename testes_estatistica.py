@@ -179,12 +179,12 @@ class TestException(TestCase):
 
 class TestIntegracaoLivro(TestCase):
     def setUp(self):
-        with open('./csv/registros.csv', 'a') as arqreg:
+        with io.open('./csv/registros.csv', 'a', encoding='utf8') as arqreg:
             arqreg.write('0;1984;Drama, Distopia, Ficção Científica;1949;Livro;10.0;Obra prima sem igual. Não importa quando ou quantas vezes você o leia, sempre haverá uma percepção de algum aspecto da sociedade que você não tinha visto antes. Praticamente uma profecia do mundo pós moderno. Não é uma leitura fácil, definitivamente. Mas vale muito a pena.;True\r\n')
             arqreg.write('1;Sherlock Holmes: Um Estudo em Vermelho;Ação, Mistério;1887;Livro;9.6;Achei muito espetacular, a trama foi muito bem elaborada ao ponto de te deixar boquiaberto a cada desfecho, simplesmente fenomenal.;True\r\n')
             arqreg.write('2;A Culpa é Das Estrelas;Drama, Romance;2012;Livro;10;Comentario;True')
 
-        with open('./csv/livros.csv', 'a') as arqliv:
+        with io.open('./csv/livros.csv', 'a', encoding='utf8') as arqliv:
             arqliv.write('0;354.0;George Orwell\r\n')
             arqliv.write('1;122.0;Arthur Conan Doyle\r\n')
             arqliv.write('2;268.0;John Green')
@@ -209,20 +209,20 @@ class TestIntegracaoLivro(TestCase):
         self.assertIn('é: 9.6', saida.getvalue())
 
     def tearDown(self):
-        with open('./csv/registros.csv', 'w') as arqreg:
+        with io.open('./csv/registros.csv', 'w', encoding='utf8') as arqreg:
             arqreg.write('id;nome;genero;ano_lancamento;tipo_midia;nota;comentario;ja_consumiu\r\n')
 
-        with open('./csv/livros.csv', 'w') as arqliv:
+        with io.open('./csv/livros.csv', 'w', encoding='utf8') as arqliv:
             arqliv.write('id;num_paginas;autor\r\n')
 
 class TestIntegracaoFilme(TestCase):
     def setUp(self):
-        with open('./csv/registros.csv', 'a') as arqreg:
+        with io.open('./csv/registros.csv', 'a', encoding='utf8') as arqreg:
             arqreg.write('0;Vingadores: Ultimato;Ação, Aventura, Drama, Ficção Científica;2019;Filme;9.0;É divertido porem não é aquele filme incrivel que mudaria sua vida;True\r\n')
             arqreg.write('1;Seven: Os Sete Crimes Capitais;Policial, Drama, Mistério;1995;Filme;8.0;comentario;True\r\n')
             arqreg.write('2;Moana - Um Mar de Aventuras;Animação, Aventura, Comédia;2016;Filme;8.5;Um filme ótimo para assistir com toda a família, aventuras, partes cômicas, partes sentimentais e muita música... Muita música mesmo. Recomendo demais esse filme;True')
 
-        with open('./csv/filmes.csv', 'a') as arqfilm:
+        with io.open('./csv/filmes.csv', 'a', encoding='utf8') as arqfilm:
             arqfilm.write('0;181;Anthony Russo, Joe Russo;Robert Downey Jr, Chris Evans, Mark Ruffalo\r\n')
             arqfilm.write('1;127;David Fincher;Morgan Freeman, Brad Pitt, Kevin Spacey\r\n')
             arqfilm.write('8;107;Ron Clements, John Musker, Don Hall;Aulii Cravalho, Dwayne Johnson, Rachel House')
@@ -247,20 +247,20 @@ class TestIntegracaoFilme(TestCase):
         self.assertIn('é: 8', saida.getvalue())
 
     def tearDown(self):
-        with open('./csv/registros.csv', 'w') as arqreg:
+        with io.open('./csv/registros.csv', 'w', encoding='utf8') as arqreg:
             arqreg.write('id;nome;genero;ano_lancamento;tipo_midia;nota;comentario;ja_consumiu\r\n')
 
-        with open('./csv/filmes.csv', 'w') as arqfilm:
+        with io.open('./csv/filmes.csv', 'w', encoding='utf8') as arqfilm:
             arqfilm.write('id;duracao;diretor;elenco\r\n')
         
 class TestIntegracaoserie(TestCase):
     def setUp(self):
-        with open('./csv/registros.csv', 'a') as arqreg:
+        with io.open('./csv/registros.csv', 'a', encoding='utf8') as arqreg:
             arqreg.write('0;Good Omens;Comédia, Fantasia;2019;Série;10.0;Lindo, Belo e Bem Gay. É uma das minhas favoritas do Neil Gaiman.;True\r\n')
             arqreg.write('1;The Office;Comédia;2005;Série;9.5;Muito bom! Não se deixe enganar pelos primeiros episódios. Série leve, divertida, com episódios curtos, excelente para assistir nas refeições.;True\r\n')
             arqreg.write('2;Arquivo X;Policial, Drama, Mistério;1993;Série;8.0;A série é muito boa, apesar de ter iniciado nos anos 90 sem os recursos dos efeitos computadorizados de hoje, te prende no suspense de cada episódio. Parabéns aos atores e criadores da série. (Recomendo);True')
 
-        with open('./csv/series.csv', 'a') as arqser:
+        with io.open('./csv/series.csv', 'a', encoding='utf8') as arqser:
             arqser.write('0;6;1;55;Michael Sheen, David Tennant, Frances McDormand, Jon Hamm\r\n')
             arqser.write('1;188;9;22;Steve Carell, Jenna Fischer, John Krasinski\r\n')
             arqser.write('2;217;11;45;David Duchovny, Gillian Anderson, Mitch Pileggi')
@@ -288,8 +288,8 @@ class TestIntegracaoserie(TestCase):
         self.assertIn('é: 8.0', saida.getvalue())
 
     def tearDown(self):
-        with open('./csv/registros.csv', 'w') as arqreg:
+        with io.open('./csv/registros.csv', 'w', encoding='utf8') as arqreg:
             arqreg.write('id;nome;genero;ano_lancamento;tipo_midia;nota;comentario;ja_consumiu\r\n')
 
-        with open('./csv/series.csv', 'w') as arqser:
+        with io.open('./csv/series.csv', 'w', encoding='utf8') as arqser:
             arqser.write('id;num_episodios;num_temporadas;tempo_por_ep;elenco\r\n')
