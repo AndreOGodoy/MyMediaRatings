@@ -129,8 +129,11 @@ class Base_Midias():
         if self.verifica_permitido_adicionar(registro, 'Série') == False:
             return
 
-        ind = self.db_registros['id'].max() + 1 #Id da série sendo adicionada
-        self.adiciona_colunas_comuns(registro, ind, 'Série')
+        if len(self.db_registros) == 0:
+            ind = 0
+        else:
+            ind = self.db_registros['id'].max() + 1 #Id da série sendo adicionada
+            self.adiciona_colunas_comuns(registro, ind, 'Série')
 
         #Transforma a lista de elenco em string com os nomes do elenco
         if registro.midia.elenco != None:
@@ -148,8 +151,11 @@ class Base_Midias():
         if self.verifica_permitido_adicionar(registro, 'Filme') == False:
             return
 
-        ind = self.db_registros['id'].max() + 1 #Id do filme sendo adicionado
-        self.adiciona_colunas_comuns(registro, ind, 'Filme')
+        if len(self.db_registros) == 0:
+            ind = 0
+        else:
+            ind = self.db_registros['id'].max() + 1 #Id do filme sendo adicionado
+            self.adiciona_colunas_comuns(registro, ind, 'Filme')
 
         #Transforma a lista de elenco em string com os nomes do elenco
         if registro.midia.elenco != None:
@@ -176,8 +182,11 @@ class Base_Midias():
         if self.verifica_permitido_adicionar(registro, 'Livro') == False:
             return
 
-        ind = self.db_registros['id'].max() + 1 #Id do livro sendo adicionado
-        self.adiciona_colunas_comuns(registro, ind, 'Livro')
+        if len(self.db_registros) == 0:
+            ind = 0
+        else:
+            ind = self.db_registros['id'].max() + 1 #Id do livro sendo adicionado
+            self.adiciona_colunas_comuns(registro, ind, 'Livro')
 
         ##Transforma a lista de autores em string com seus nomes
         if registro.midia.autor != None:
