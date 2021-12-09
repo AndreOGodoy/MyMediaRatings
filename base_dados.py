@@ -131,6 +131,8 @@ class Base_Midias():
 
         if len(self.db_registros) == 0:
             ind = 0
+            self.db_registros.loc[0] = [ind, registro.midia.nome, registro.midia.genero, registro.midia.ano, 
+                                        'Série', registro.nota, registro.comentario, registro.ja_consumiu]
         else:
             ind = self.db_registros['id'].max() + 1 #Id da série sendo adicionada
             self.adiciona_colunas_comuns(registro, ind, 'Série')
@@ -144,7 +146,10 @@ class Base_Midias():
         else:
             elenco = None
         
-        self.db_series.loc[self.db_series.index.max()+1] = [ind, registro.midia.episodios, registro.midia.temporadas, registro.midia.tempo_episodio, elenco]
+        if len(self.db_series) == 0:
+            self.db_series.loc[0] = [ind, registro.midia.episodios, registro.midia.temporadas, registro.midia.tempo_episodio, elenco]
+        else:
+            self.db_series.loc[self.db_series.index.max()+1] = [ind, registro.midia.episodios, registro.midia.temporadas, registro.midia.tempo_episodio, elenco]
 
     #Adiciona filme à base
     def adiciona_filme(self, registro):
@@ -153,6 +158,8 @@ class Base_Midias():
 
         if len(self.db_registros) == 0:
             ind = 0
+            self.db_registros.loc[0] = [ind, registro.midia.nome, registro.midia.genero, registro.midia.ano, 
+                                        'Filme', registro.nota, registro.comentario, registro.ja_consumiu]
         else:
             ind = self.db_registros['id'].max() + 1 #Id do filme sendo adicionado
             self.adiciona_colunas_comuns(registro, ind, 'Filme')
@@ -175,7 +182,10 @@ class Base_Midias():
         else:
             diretores = None
         
-        self.db_filmes.loc[self.db_filmes.index.max()+1] = [ind, registro.midia.duracao, diretores, elenco]
+        if len(self.db_filmes) == 0:
+            self.db_filmes.loc[0] = [ind, registro.midia.duracao, diretores, elenco]
+        else:
+            self.db_filmes.loc[self.db_filmes.index.max()+1] = [ind, registro.midia.duracao, diretores, elenco]
 
     #Adiciona livro à base
     def adiciona_livro(self, registro):
@@ -184,6 +194,8 @@ class Base_Midias():
 
         if len(self.db_registros) == 0:
             ind = 0
+            self.db_registros.loc[0] = [ind, registro.midia.nome, registro.midia.genero, registro.midia.ano, 
+                                        'Livro', registro.nota, registro.comentario, registro.ja_consumiu]
         else:
             ind = self.db_registros['id'].max() + 1 #Id do livro sendo adicionado
             self.adiciona_colunas_comuns(registro, ind, 'Livro')
@@ -197,7 +209,10 @@ class Base_Midias():
         else:
             autores = None
         
-        self.db_livros.loc[self.db_livros.index.max()+1] = [ind, registro.midia.paginas, autores]
+        if len(self.db_livros) == 0:
+            self.db_livros.loc[0] = [ind, registro.midia.paginas, autores]
+        else:
+            self.db_livros.loc[self.db_livros.index.max()+1] = [ind, registro.midia.paginas, autores]
 
     #Remove série do DataFrame específico
     def remove_serie(self, num_id):
