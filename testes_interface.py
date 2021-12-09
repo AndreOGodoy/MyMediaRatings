@@ -1,10 +1,15 @@
 import unittest
 from unittest.case import TestCase
+from unittest.mock import patch
 import pandas as pd
 
 from interface import Interface
 
+from views import View
+from patch import _sincroniza_db
+
 class TestesInterface(unittest.TestCase):
+    @patch(__module__+'.View._sincroniza_db', _sincroniza_db)
     def setUp(self):
         self.interface = Interface('csv_teste/')
 

@@ -66,10 +66,20 @@ class View():
         self._primeiro_filtro = True
         self._composicao = pd.DataFrame()
 
+    def _merge_dbs(self, db1: pd.DataFrame, db2: pd.DataFrame) -> pd.DataFrame:
+        result: pd.DataFrame = None
+
+        try:
+            result = pd.merge(db1, db2, on='id', how='outer')
+        except IndexError:
+            result = db1.reindex_axis(db1.columns.union(db2.columns), axis=1)
+
+        assert result is not None
+        return result
+
     def _sincroniza_db(self):
         dbs = self._instancia.obtem_dbs()
-
-        self._data = reduce(lambda df1, df2: pd.merge(df1, df2, on='id', how='outer'), dbs)
+        self._data = reduce(self._merge_dbs, dbs)
 
     @property
     def filtros(self):
