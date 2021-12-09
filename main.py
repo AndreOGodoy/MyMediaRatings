@@ -10,7 +10,7 @@ acoes = {
 	'listar': (Interface, 'lista'),
 	'adicionar': (Base_Midias, 'adiciona'),
 	'remover': (Base_Midias, 'remove'),
-	'mostrar': (Interface, 'estatisticas'),
+	'estatisticas': (Interface, 'estatisticas'),
 	'comentarios': (Interface, 'comentario')
 }
 
@@ -24,7 +24,7 @@ tipos_midia = {
 interface = Interface()
 
 while(True):
-	comando = input("Digite um comando (listar, mostrar, adicionar, remover, comentarios): ")
+	comando = input("Digite um comando (listar, estatisticas, adicionar, remover, comentarios, sair): ")
 
 	if comando == "sair":
 		break
@@ -44,32 +44,17 @@ while(True):
 	chamada = acoes[acao][1] + '_' + midia 
 
 	if acao == 'listar':
-		metodo = getattr(acoes[acao][0], chamada)
-		metodo(interface)
+		getattr(acoes[acao][0], chamada)(interface) #chama o lista_x relacionado
 	elif acao == 'adicionar':
 		interface.input_midia(midia)
-
-		nova_midia = interface.cria_midia(midia)
-		
-		nota, comentario, booleano = interface.input_registro(midia)
-
-		registro_novo = Registro(nota, nova_midia, comentario, booleano)
-
-		metodo = getattr(acoes[acao][0], chamada)
-		metodo(interface._db, registro_novo)
-
-		interface._db.atualiza_arquivos()
-		interface._view = View()
+		midia_nova = interface.cria_midia(midia)
+		registro_novo = interface.cria_registro(midia, midia_nova)
+		interface.adicionar_registro(registro_novo, acoes[acao][0], chamada)
 	elif acao == 'remover':
 		nome = input(f"Digite o nome da(o) {midia}: ")
-
-		interface._db.remove_registro_nome(nome, tipos_midia[midia])
-
-		interface._db.atualiza_arquivos()
-		interface._view = View()
-	elif acao == 'mostrar':
-		metodo = getattr(acoes[acao][0], chamada)
-		metodo(interface)
+		interface.remover_registro(nome, tipos_midia[midia])
+	elif acao == 'estatisticas':
+		getattr(acoes[acao][0], chamada)(interface) #chama o estatistica_x relacionado
 	elif acao == 'comentarios':
 		interface.comentario_midia(tipos_midia[midia])
 

@@ -111,9 +111,6 @@ class Interface():
 
 		self._view = View()
 
-	def limpa_dados(self):
-		self._dados_midia = []
-
 	def input_filme(self):
 		self._dados_midia.append(int(input("Digite a duração do filme: ")))
 		
@@ -138,6 +135,8 @@ class Interface():
 		self._dados_midia.append(int(input("Digite o número de páginas: ")))
 
 	def input_midia(self, midia):
+		self._dados_midia = [] #limpa os dados antigos antes de inserir os novos
+		
 		self._dados_midia.append(input(f"Digite o nome do(a) {midia}: "))
 		self._dados_midia.append(input(f"Digite o genero do(a) {midia}: "))
 		self._dados_midia.append(int(input("Digite o ano de lançamento: ")))
@@ -151,13 +150,10 @@ class Interface():
 		elif midia == 'livro':
 			self.input_livro()
 
-
-	def input_registro(self, midia):
-		self.limpa_dados()
-
-		nota = int(input(f"De uma nota para a(o) {midia}: "))
-		comentario = input(f"Deixe um comentario sobre a(o) {midia}: ")
-		consumiu = input(f"Você ja leu/viu a(o) {midia}? (S/N): ")
+	def cria_registro(self, tipo_midia, nova_midia):
+		nota = int(input(f"De uma nota para a(o) {tipo_midia}: "))
+		comentario = input(f"Deixe um comentario sobre a(o) {tipo_midia}: ")
+		consumiu = input(f"Você ja leu/viu a(o) {tipo_midia}? (S/N): ")
 
 		booleano = None
 		if consumiu in ['Sim', 'S', 's', 'sim', 'Y', 'Yes', 'yes', 'y']:
@@ -165,7 +161,7 @@ class Interface():
 		else:
 			booleano = False
 
-		return nota, comentario, booleano
+		return Registro(nota, nova_midia, comentario, booleano)
 
 	def cria_midia(self, midia):
 		nova_midia = None
@@ -178,3 +174,16 @@ class Interface():
 			nova_midia = Serie(*self._dados_midia)
  		
 		return nova_midia
+	
+	def adicionar_registro(self, registro_novo, classe_acao, chamada):
+		metodo = getattr(classe_acao, chamada)
+		metodo(self._db, registro_novo)
+
+		self._db.atualiza_arquivos()
+		self._view = View()
+	
+	def remover_registro(self, nome, tipo_midia):
+		self._db.remove_registro_nome(nome, tipo_midia)
+
+		self._db.atualiza_arquivos()
+		self._view = View()
