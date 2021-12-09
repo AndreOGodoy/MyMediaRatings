@@ -3,6 +3,8 @@ from unittest.case import TestCase
 from unittest.mock import Base, patch
 import pandas as pd
 import os
+import sys
+import io
 
 from interface import *
 
@@ -111,6 +113,9 @@ class TestesInterfaceIntegracao(unittest.TestCase):
         self.interface.adicionar_registro(registro_novo3, Base_Midias, 'adiciona_serie')
         self.interface.adicionar_registro(registro_novo4, Base_Midias, 'adiciona_filme')
 
+        saida = io.StringIO()
+        sys.stdout = saida
+
         self.interface.lista_geral()
         self.assertEqual(4, len(self.interface._view._composicao))
         
@@ -123,6 +128,8 @@ class TestesInterfaceIntegracao(unittest.TestCase):
         self.interface.lista_serie()
         self.assertEqual(1, len(self.interface._view._composicao))
 
+        sys.stdout = sys.__stdout__
+
     def testa_lista_comentario(self):
         filme = Filme('Shang-Chi e a Lenda dos Dez Anéis', 'Ação, Aventura, Fantasia', 2021, 132, ['Destin Daniel Cretton'], ['Simu Liu', 'Awkwafina', 'Tony Chiu-Wai Leung'])
         registro_novo1 = Registro(8.8, filme, 'Muito bom!', True)
@@ -133,6 +140,11 @@ class TestesInterfaceIntegracao(unittest.TestCase):
         self.interface.adicionar_registro(registro_novo1, Base_Midias, 'adiciona_filme')
         self.interface.adicionar_registro(registro_novo2, Base_Midias, 'adiciona_livro')
 
+        saida = io.StringIO()
+        sys.stdout = saida
+
         self.interface.comentario_midia()
+    
+        sys.stdout = sys.__stdout__
 
         self.assertEqual(2, len(self.interface._view._composicao))
