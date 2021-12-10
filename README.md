@@ -44,3 +44,6 @@
 - Python3
 - Uso de CSV e Pandas como Banco de Dados
 
+## Cobertura
+
+- Link para o Codecov: https://app.codecov.io/gh/AndreOGodoy/MyMediaRatings
