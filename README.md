@@ -25,6 +25,7 @@
 
 ## Funcionamento do Sistema
 
+- Para executar o programa, no diretório raiz: python -m app
 - Ao executar o programa, o usuário tem diversas opções acessíveis pela linha de comando:
 	- listar -> mostra todos os dados das mídias de acordo com o filtro fornecido (exceto comentários)
 	- estatisticas -> mostra as estatísticas relevantes de acordo com o filtro fornecido
