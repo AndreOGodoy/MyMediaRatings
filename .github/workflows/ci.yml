@@ -44,3 +44,7 @@ jobs:
 
       - name: Roda a suite de testes com coverage
         run: python -m coverage run -m unittest
+
+      - name: Upload para Codecov
+        uses: codecov/codecov-action@v2
+
