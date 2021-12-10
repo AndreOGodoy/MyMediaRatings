@@ -42,5 +42,5 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip install coverage
 
-      - name: Roda a suite de testes
-        run: python -m coverage -m unittest
+      - name: Roda a suite de testes com coverage
+        run: python -m coverage run -m unittest
