@@ -177,7 +177,48 @@ class TestException(TestCase):
 #Vão consistir em utilizar as funções presentes em Views
 #e no banco de dados original para mostrar as estatísticas
 
-class TestIntegracaoLivro(TestCase):
+class TestIntegracao(TestCase):
+    def filtra_view(self, filtros):
+        self.view = View()
+        for filtro in filtros:
+            self.view.filtra_por(filtro)
+        return self.view
+
+    def manipula_saida(self, tipo):
+        saida = io.StringIO()
+        sys.stdout = saida
+        tipo()
+        sys.stdout = sys.__stdout__
+        return saida
+
+class TestIntegracaoGeral(TestIntegracao):
+    def setUp(self):
+        with io.open('./csv/registros.csv', 'a', encoding='utf8') as arqreg:
+            arqreg.write('0;1984;Drama, Distopia, Ficção Científica;1949;Livro;10.0;Obra prima sem igual. Não importa quando ou quantas vezes você o leia, sempre haverá uma percepção de algum aspecto da sociedade que você não tinha visto antes. Praticamente uma profecia do mundo pós moderno. Não é uma leitura fácil, definitivamente. Mas vale muito a pena.;True\r\n')
+            arqreg.write('1;Sherlock Holmes: Um Estudo em Vermelho;Ação, Mistério;1887;Livro;9.6;Achei muito espetacular, a trama foi muito bem elaborada ao ponto de te deixar boquiaberto a cada desfecho, simplesmente fenomenal.;True\r\n')
+            arqreg.write('2;A Culpa é Das Estrelas;Drama, Romance;2012;Livro;10;Comentario;True')
+
+    def test_integra_geral(self):
+        filtros = ['nome', 'genero', 'ano_lancamento', 'tipo_midia', 'nota', 'ja_consumiu']
+
+        dados = self.filtra_view(filtros)
+
+        est = EstRegistros(dados._composicao)
+        saida = self.manipula_saida(est.est_geral)
+
+        #Asserts conferindo cada uma das saídas
+        self.assertIn('é: 9.87', saida.getvalue())
+        self.assertIn('frequência: 10', saida.getvalue())
+        self.assertIn('é: 10.0', saida.getvalue())
+        self.assertIn('é: 9.6', saida.getvalue())
+        self.assertIn('Livro', saida.getvalue())
+        self.assertIn('1949', saida.getvalue())
+
+    def tearDown(self):
+        with io.open('./csv/registros.csv', 'w', encoding='utf8') as arqreg:
+            arqreg.write('id;nome;genero;ano_lancamento;tipo_midia;nota;comentario;ja_consumiu\r\n')
+
+class TestIntegracaoLivro(TestIntegracao):
     def setUp(self):
         with io.open('./csv/registros.csv', 'a', encoding='utf8') as arqreg:
             arqreg.write('0;1984;Drama, Distopia, Ficção Científica;1949;Livro;10.0;Obra prima sem igual. Não importa quando ou quantas vezes você o leia, sempre haverá uma percepção de algum aspecto da sociedade que você não tinha visto antes. Praticamente uma profecia do mundo pós moderno. Não é uma leitura fácil, definitivamente. Mas vale muito a pena.;True\r\n')
@@ -190,17 +231,12 @@ class TestIntegracaoLivro(TestCase):
             arqliv.write('2;268.0;John Green')
 
     def test_integra_livro(self):
-        self.view = View()
         filtros = ['nome', 'num_paginas', 'autor', 'nota']
         
-        for filtro in filtros:
-            self.view.filtra_por(filtro)
+        dados = self.filtra_view(filtros)
 
-        est = EstLivros(self.view._composicao)
-        saida = io.StringIO()
-        sys.stdout = saida
-        est.est_geral_livros()
-        sys.stdout = sys.__stdout__
+        est = EstLivros(dados._composicao)
+        saida = self.manipula_saida(est.est_geral_livros)
 
         #Asserts conferindo cada uma das saídas numéricas
         self.assertIn('é: 248', saida.getvalue())
@@ -215,7 +251,7 @@ class TestIntegracaoLivro(TestCase):
         with io.open('./csv/livros.csv', 'w', encoding='utf8') as arqliv:
             arqliv.write('id;num_paginas;autor\r\n')
 
-class TestIntegracaoFilme(TestCase):
+class TestIntegracaoFilme(TestIntegracao):
     def setUp(self):
         with io.open('./csv/registros.csv', 'a', encoding='utf8') as arqreg:
             arqreg.write('0;Vingadores: Ultimato;Ação, Aventura, Drama, Ficção Científica;2019;Filme;9.0;É divertido porem não é aquele filme incrivel que mudaria sua vida;True\r\n')
@@ -228,17 +264,12 @@ class TestIntegracaoFilme(TestCase):
             arqfilm.write('8;107;Ron Clements, John Musker, Don Hall;Aulii Cravalho, Dwayne Johnson, Rachel House')
 
     def test_integra_filme(self):
-        self.view = View()
         filtros = ['nome', 'duracao', 'diretor', 'nota', 'elenco_y']
         
-        for filtro in filtros:
-            self.view.filtra_por(filtro)
+        dados = self.filtra_view(filtros)
 
-        est = EstFilmes(self.view._composicao)
-        saida = io.StringIO()
-        sys.stdout = saida
-        est.est_geral_filmes()
-        sys.stdout = sys.__stdout__
+        est = EstFilmes(dados._composicao)
+        saida = self.manipula_saida(est.est_geral_filmes)
 
         #Asserts conferindo cada uma das saídas numéricas
         self.assertIn('é: 138.33', saida.getvalue())
@@ -253,7 +284,7 @@ class TestIntegracaoFilme(TestCase):
         with io.open('./csv/filmes.csv', 'w', encoding='utf8') as arqfilm:
             arqfilm.write('id;duracao;diretor;elenco\r\n')
         
-class TestIntegracaoserie(TestCase):
+class TestIntegracaoserie(TestIntegracao):
     def setUp(self):
         with io.open('./csv/registros.csv', 'a', encoding='utf8') as arqreg:
             arqreg.write('0;Good Omens;Comédia, Fantasia;2019;Série;10.0;Lindo, Belo e Bem Gay. É uma das minhas favoritas do Neil Gaiman.;True\r\n')
@@ -266,17 +297,12 @@ class TestIntegracaoserie(TestCase):
             arqser.write('2;217;11;45;David Duchovny, Gillian Anderson, Mitch Pileggi')
 
     def test_integra_serie(self):
-        self.view = View()
         filtros = ['nome', 'num_episodios', 'num_temporadas', 'tempo_por_ep', 'nota', 'elenco_x']
         
-        for filtro in filtros:
-            self.view.filtra_por(filtro)
+        dados = self.filtra_view(filtros)
 
-        est = EstSeries(self.view._composicao)
-        saida = io.StringIO()
-        sys.stdout = saida
-        est.est_geral_series()
-        sys.stdout = sys.__stdout__
+        est = EstSeries(dados._composicao)
+        saida = self.manipula_saida(est.est_geral_series)
 
         #Asserts conferindo cada uma das saídas numéricas
         self.assertIn('é: 137', saida.getvalue())
