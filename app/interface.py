@@ -1,7 +1,7 @@
-from views import *
-from base_dados import *
-from estatisticas import *
-from midia import *
+from app.views import *
+from app.base_dados import *
+from app.estatisticas import *
+from app.midia import *
 
 class Interface():
 	def __init__(self, local_base='csv/'):
@@ -171,7 +171,7 @@ class Interface():
 			nova_midia = Serie(*self._dados_midia)
  		
 		return nova_midia
-	
+
 	def adicionar_registro(self, registro_novo, classe_acao, chamada):
 		metodo = getattr(classe_acao, chamada)
 		metodo(self._db, registro_novo)
@@ -184,3 +184,4 @@ class Interface():
 
 		self._db.atualiza_arquivos()
 		self._view = View()
+

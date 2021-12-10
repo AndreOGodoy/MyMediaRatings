@@ -1,7 +1,7 @@
 from typing import ChainMap
 from numpy.core.numeric import NaN
 from numpy.testing._private.utils import assert_equal
-from estatisticas import *
+from app.estatisticas import *
 
 import pandas as pd
 from pandas import DataFrame
@@ -12,7 +12,7 @@ import sys
 
 from unittest import TestCase
 
-from views import View
+from app.views import View
 
 #Testes simples, com todos os valores disponíveis
 class TestEstatisticasSimples(TestCase):
@@ -293,3 +293,4 @@ class TestIntegracaoserie(TestCase):
 
         with io.open('./csv/series.csv', 'w', encoding='utf8') as arqser:
             arqser.write('id;num_episodios;num_temporadas;tempo_por_ep;elenco\r\n')
+

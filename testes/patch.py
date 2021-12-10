@@ -17,7 +17,7 @@ from typing import List
 def cria_db_teste() -> List[DataFrame]:
     dfs = []
 
-    caminho = './csv_teste'
+    caminho = './testes/csv_teste'
     for csv in os.listdir(caminho):
         caminho_csv = os.path.join(caminho, csv)
         df = pd.read_csv(caminho_csv, sep=';')

@@ -6,15 +6,16 @@ import os
 import sys
 import io
 
-from interface import *
+from app.interface import Interface
+from app.views import View
+from app.base_dados import *
 
-from views import View
-from patch import _sincroniza_db
+from .patch import _sincroniza_db
 
 class TestesInterfaceUnidade(unittest.TestCase):
     @patch(__module__+'.View._sincroniza_db', _sincroniza_db)
     def setUp(self):
-        self.interface = Interface('csv_teste/')
+        self.interface = Interface('./testes/csv_teste/')
 
     def teste_filtra_midia_livro(self):
         filtros = ['id', 'nome', 'nota']

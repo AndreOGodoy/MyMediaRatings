@@ -1,10 +1,10 @@
 import os
 import pandas as pd
 
-from registro import Registro
-from interface import *
+from app.registro import Registro
+from app.interface import *
 
-from utils import *
+from app.utils import *
 
 acoes = {
 	'listar': (Interface, 'lista'),

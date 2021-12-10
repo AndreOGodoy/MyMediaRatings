@@ -1,7 +1,7 @@
 import pandas as pd
 
-from midia import *
-from registro import Registro
+from app.midia import *
+from app.registro import Registro
 
 class Base_Midias():
     db_registros = pd.DataFrame #DataFrame de colunas comuns aos tipos

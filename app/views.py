@@ -3,7 +3,7 @@ from copy import copy
 from functools import reduce
 from typing import List, Optional, Callable
 
-from base_dados import Base_Midias
+from app.base_dados import Base_Midias
 
 # Esta classe é utilizada para organização interna
 #

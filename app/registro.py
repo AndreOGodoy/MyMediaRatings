@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from midia import *
+from app.midia import *
 
 @dataclass
 class Registro():

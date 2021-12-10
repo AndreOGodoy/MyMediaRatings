@@ -1,4 +1,4 @@
-from views import *
+from app.views import *
 
 import pandas as pd
 from pandas import DataFrame
@@ -9,7 +9,7 @@ from typing import List
 from unittest import TestCase
 from unittest.mock import patch
 
-from patch import _sincroniza_db, cria_db_teste
+from .patch import _sincroniza_db, cria_db_teste
 
 class TestViews(TestCase):
 
